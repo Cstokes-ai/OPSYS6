@@ -37,6 +37,14 @@ typedef struct {
     int quantity;
 } BlockedRequest;
 
+typedef struct {
+    int pid;
+    int page_number;
+    int dirty_bit;
+    int last_access_time;// in seconds
+    int last_access_nano_time;// in nanoseconds
+
+} Frame;
 int shmid_clock;
 int msqid;
 int *shared_clock;
@@ -213,7 +221,73 @@ void attempt_to_unblock() {
         }
     }
 }
+int lru_algorithm(Frame frame_table[], int frame_count) {
+    int lru_index = -1;
+    int oldest_time = INT_MAX; // Initialize to a very large value
+    int oldest_nano_time = INT_MAX;
 
+    for (int i = 0; i < frame_count; i++) {
+        if (frame_table[i].pid != -1) { // Only consider frames in use
+            if (frame_table[i].last_access_time < oldest_time ||
+                (frame_table[i].last_access_time == oldest_time &&
+                 frame_table[i].last_access_nano_time < oldest_nano_time)) {
+                lru_index = i;
+                oldest_time = frame_table[i].last_access_time;
+                oldest_nano_time = frame_table[i].last_access_nano_time;
+            }
+        }
+    }
+
+    return lru_index;
+}
+// need a function for frame table
+
+void frame_table() {
+    Frame frame_table[MAX_PROCESSES];
+    for (int i = 0: i <MAX_PROCESSES; i++) {
+        frame_table[i] = 1;
+        frame_table[i].pid = -1;
+        frame_table[i].page_number = -1;
+        frame_table[i].dirty_bit = 0;
+        frame_table[i].last_access_time = -1;
+        frame_table[i].last_access_nano_time = -1;
+
+    }
+    
+    
+}
+
+// handle memory requests first
+void memory_request(){
+    //extract the page number and offset from the requested address
+    int page_number = address / 1024; // assuming page size is 1024 bytes
+    int offset = address % 1024;
+    //check logic to see if the page is in memory
+    int page_in_memory = 0;
+    //also look up frame table to see if the page is loaded.
+    //if found, update the frame's int last_access_time and last_access_nano_time with the current shared_clock
+    for (int i = 0; i <MAX_PROCESSES; i++) {
+        if frame_table[i].pid == pid &&frame_table.page_number == page_number) {
+            page_in_memory = 1; //updated
+            frame_table[i].last_access_time = shared_clock[0];
+            frame_table[i].last_access_nano_time = shared_clock[1];
+            break;
+        }
+    }
+}
+
+void page_fault(){
+    // use the lru algorithm function above for lru algorithm calling 
+    //first, if the page is not in memory, check for a free from in frame table
+
+    int free_frame = -1;
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (frame_table[i]. pid == -1) {
+            free_frame = i;
+        }
+        //if no free frame is available, use LRU algorithm to find
+    }
+}
 int main(int argc, char *argv[]) {
     int opt;
     while ((opt = getopt(argc, argv, "hn:s:i:f:")) != -1) {
@@ -280,6 +354,8 @@ int main(int argc, char *argv[]) {
 
             //  Implement memory management logic
             // Handle memory requests, page faults, and LRU page replacement
+            //frame table
+
         }
 
         usleep(launch_interval_ms * 1000);

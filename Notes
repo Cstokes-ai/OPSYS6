@@ -1,0 +1,50 @@
+1. Define Data Structures
+   - Add a `Frame` structure to represent each frame in the frame table.
+     - Fields: `pid`, `page_number`, `dirty_bit`, `last_access_s`, `last_access_ns`.
+   - Create a `frame_table` array with 256 entries (for 128KB memory with 1KB pages).
+   - Add a `page_table` for each process (32 entries per process for 32KB memory).
+
+2. Initialize Frame Table
+   - Write a function `initialize_frame_table()` to set all frames as free (e.g., `pid = -1`).
+
+3. Handle Memory Requests
+   - Extract the page number and offset from the requested address:
+     - `page_number = address / 1024`.
+     - `offset = address % 1024`.
+   - Check if the page is already in memory:
+     - Look up the `frame_table` to see if the page is loaded.
+     - If found, update the frame's `last_access_s` and `last_access_ns` with the current `shared_clock`.
+
+4. Handle Page Faults
+   - If the page is not in memory:
+     - Check for a free frame in the `frame_table`.
+     - If no free frame is available, use the **LRU algorithm**:
+       - Find the frame with the oldest timestamp (`last_access_s` and `last_access_ns`).
+       - If the frame's `dirty_bit` is set, simulate writing it back to disk (increment `shared_clock` by 14ms).
+     - Load the new page into the selected frame.
+     - Update the `page_table` for the process to map the page to the frame.
+
+5. Simulate Disk I/O
+   - Increment the `shared_clock` by 14ms for each page fault (or more if the dirty bit is set).
+
+6. Update Frame Table
+   - When a frame is accessed (read or write), update its `last_access_s` and `last_access_ns` with the current `shared_clock`.
+   - If the request is a write, set the frame's `dirty_bit` to 1.
+
+7. Log Memory Activity
+   - Log each memory request, whether it was a hit or a page fault.
+   - Log actions taken during page faults (e.g., evicting a frame, writing back to disk).
+   - Periodically log the state of the `frame_table` and `page_table`.
+
+8. Track Statistics
+   - Track the total number of memory requests.
+   - Track the number of page faults.
+   - Calculate and log the page fault rate (page faults / total requests).
+
+9. Clean Up
+   - Ensure all shared memory, message queues, and semaphores are cleaned up on termination.
+   - Free any dynamically allocated memory (if applicable).
+
+10. Testing
+   - Test with a small number of processes and memory requests to ensure correctness.
+   - Gradually increase the number of processes and memory requests to test scalability.
