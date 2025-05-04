@@ -48,3 +48,55 @@
 10. Testing
    - Test with a small number of processes and memory requests to ensure correctness.
    - Gradually increase the number of processes and memory requests to test scalability.
+
+---
+
+### User Processes Tasks
+1. Generate Memory Requests
+   - Each user process generates random memory addresses to request.
+     - Generate a random **page number** between `0` and `31` (32 pages per process).
+     - Generate a random **offset** between `0` and `1023` (1KB page size).
+     - Calculate the **memory address** by combining the page number and offset.
+
+2. Determine Read or Write
+   - Use randomness to decide if the request is a **read** or **write**.
+     - Bias the randomness towards **reads** (e.g., 70% reads, 30% writes).
+
+3. Send Memory Request to `oss`
+   - Create a message structure to send the memory request to `oss`.
+     - Include fields like `pid`, `address`, and `is_write`.
+   - Use `msgsnd()` to send the message to `oss`.
+
+4. Wait for Response from `oss`
+   - After sending a memory request, the user process waits for a response from `oss`.
+     - Use `msgrcv()` to receive the response.
+
+5. Check for Termination
+   - At random intervals (e.g., every `1000 ± 100` memory references), check if the process should terminate.
+     - Use randomness to decide termination.
+   - If terminating:
+     - Inform `oss` by sending a termination message.
+     - Release all memory (if applicable).
+
+6. Track Statistics
+   - Track the following statistics for each user process:
+     - Total number of memory requests made.
+     - Number of reads vs. writes.
+     - Number of page faults (if `oss` sends this information back).
+
+7. Handle Signals
+   - Add signal handling to ensure proper cleanup in case of abnormal termination.
+     - Detach shared memory and exit gracefully.
+
+8. Termination Conditions
+   - Terminate the user process if:
+     - More than `100` processes have been created in the system.
+     - More than `5` real-life seconds have passed.
+   - Ensure proper cleanup:
+     - Detach shared memory.
+     - Exit the process gracefully.
+
+9. Cleanup
+   - Ensure all shared resources are released:
+     - Detach shared memory (`shmdt()`).
+     - Exit the process gracefully.

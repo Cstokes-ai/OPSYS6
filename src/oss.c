@@ -64,52 +64,39 @@ void print_usage(const char *progname) {
 }
 
 void increment_clock() {
-    shared_clock[1] += rand() % 1000;
+    //increment shared_clock by 14ms for each page fault (or more if the dirty bit is set)
+    shared_clock[1] += 14000000;
     if (shared_clock[1] >= 1000000000) {
         shared_clock[0]++;
         shared_clock[1] -= 1000000000;
     }
 }
-
-void print_resource_table() {
-    fprintf(log_file, "\nResource Allocation Table at time %d:%d:\n", shared_clock[0], shared_clock[1]);
-    fprintf(log_file, "    Total    Available\n");
-    for (int i = 0; i < MAX_RESOURCES; i++) {
-        fprintf(log_file, "R%d:   %3d        %3d\n", i, resources->total[i], resources->available[i]);
-    }
-    fprintf(log_file, "\nAllocation per Process:\n");
+void update_frame_table(int pid, int page_number, int dirty_bit) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        int allocated = 0;
-        for (int j = 0; j < MAX_RESOURCES; j++) {
-            if (resources->allocation[i][j] > 0) {
-                allocated = 1;
-                break;
-            }
+    /*When a frame is accessed (read or write), update its `last_access_s` and `last_access_ns` with the current `shared_clock`.
+   - If the request is a write, set the frame's `dirty_bit` to 1.*/
+   if (frame_table[i].pid == pid && frame_table[i].page_number == page_number) {
+        frame_table[i].last_access_time = shared_clock[0];
+        frame_table[i].last_access_nano_time = shared_clock[1];
+        if (dirty_bit) {
+            frame_table[i].dirty_bit = 1;
         }
-        if (allocated) {
-            fprintf(log_file, "P%d: ", i);
-            for (int j = 0; j < MAX_RESOURCES; j++) {
-                fprintf(log_file, "R%d=%d ", j, resources->allocation[i][j]);
-            }
-            fprintf(log_file, "\n");
-        }
+        return; // Exit the function once the frame is updated
     }
-    fprintf(log_file, "\n");
+    // If the frame is not found, add a new entry (if there's space)
+    for (int j = 0; j < MAX_PROCESSES; j++) {
+        if (frame_table[j].pid == -1) { // Empty slot found
+            frame_table[j].pid = pid;
+            frame_table[j].page_number = page_number;
+            frame_table[j].dirty_bit = dirty_bit;
+            frame_table[j].last_access_time = shared_clock[0];
+            frame_table[j].last_access_nano_time = shared_clock[1];
+            return;
+   }
+    }
 
-    // Also print blocked processes
-    fprintf(log_file, "Blocked Processes:\n");
-    int any_blocked = 0;
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (blocked[i].valid) {
-            fprintf(log_file, "P%d is blocked requesting %d of R%d\n", blocked[i].pid, blocked[i].quantity, blocked[i].resource);
-            any_blocked = 1;
-        }
-    }
-    if (!any_blocked) {
-        fprintf(log_file, "None\n");
-    }
-    fflush(log_file);
 }
+
 
 void handle_sigint(int sig) {
     fprintf(stderr, "Master: Caught signal %d, terminating children.\n", sig);
@@ -281,12 +268,45 @@ void page_fault(){
     //first, if the page is not in memory, check for a free from in frame table
 
     int free_frame = -1;
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (frame_table[i]. pid == -1) {
-            free_frame = i;
-        }
-        //if no free frame is available, use LRU algorithm to find
+   // Step 1: Check for a free frame
+   for (int i = 0; i < FRAME_COUNT; i++) {
+    if (frame_table[i].pid == -1) { // Free frame found
+        free_frame = i;
+        break;
     }
+}
+
+// Step 2: Use LRU if no free frame is available
+int frame_to_replace = free_frame;
+if (free_frame == -1) {
+    frame_to_replace = find_lru_frame(frame_table, FRAME_COUNT);
+
+    // Step 3: Handle dirty frame
+    if (frame_table[frame_to_replace].dirty_bit == 1) {
+        shared_clock[1] += 14000000; // Increment clock by 14ms
+        if (shared_clock[1] >= 1000000000) {
+            shared_clock[0]++;
+            shared_clock[1] -= 1000000000;
+        }
+    }
+}
+
+// Step 4: Replace the frame
+frame_table[frame_to_replace].pid = pid;
+frame_table[frame_to_replace].page_number = page_number;
+frame_table[frame_to_replace].dirty_bit = 0; // Reset dirty bit
+frame_table[frame_to_replace].last_access_time = shared_clock[0];
+frame_table[frame_to_replace].last_access_nano_time = shared_clock[1];
+
+// load the new page into the selected frame
+//then update the page_table for the process to map the page to the frame.
+if (page_table[pid][page_number] == -1) {
+    page_table[pid][page_number] = frame_to_replace;
+    fprintf(log_file, "Page fault: Loaded page %d into frame %d for process P%d at time %d:%d\n",
+            page_number, frame_to_replace, pid, shared_clock[0], shared_clock[1]);
+} else {
+    fprintf(log_file, "Page %d already loaded in frame %d for process P%d at time %d:%d\n",
+            page_number, page_table[pid][page_number], pid, shared_clock[0], shared_clock[1]);
 }
 int main(int argc, char *argv[]) {
     int opt;
