@@ -1,211 +1,162 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <signal.h>
-#include <string.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/msg.h>
 #include <sys/wait.h>
-#include <time.h>
+#include <signal.h>
+#include <string.h>
 #include <errno.h>
-#include <getopt.h>
-#include <limits.h>
+#include <time.h>
 
 #define MAX_PROCESSES 18
-#define FRAME_COUNT 256 // 256 frames for 128KB memory
-#define PAGE_COUNT 32   // 32 pages per process
-#define MAX_REQUESTS 100
+#define PAGE_TABLE_SIZE 32
+#define FRAME_TABLE_SIZE 256
+#define MSGSZ 128
 
 typedef struct {
     long mtype;
     int pid;
     int address;
-    int is_write; // 1 = write, 0 = read
+    int is_write;
 } Message;
 
 typedef struct {
-    int pid;
-    int page_number;
-    int dirty_bit;
-    int last_access_time;      // in seconds
-    int last_access_nano_time; // in nanoseconds
+    int frame_number;
+    int dirty;
+    int reference_bit;
+    time_t last_used;
 } Frame;
 
 int shmid_clock;
-int msqid;
 int *shared_clock;
+int msqid;
 FILE *log_file;
-pid_t child_pids[MAX_PROCESSES] = {0};
 
-int max_children = 5;
-int simul_limit = 5;
-int launch_interval_ms = 1000;
+int max_children = 40;
+int simul_limit = 18;
+int launch_interval_ms = 100;
 char log_filename[256] = "oss.log";
 
-Frame frame_table[FRAME_COUNT];
-int page_table[MAX_PROCESSES][PAGE_COUNT];
+Frame frame_table[FRAME_TABLE_SIZE];
+pid_t child_pids[MAX_PROCESSES];
 
-void print_usage(const char *progname) {
-    printf("Usage: %s [-h] [-n proc] [-s simul] [-i intervalMs] [-f logfile]\n", progname);
+void print_usage(char *progname) {
+    printf("Usage: %s [-h] [-n proc] [-s simul] [-i interval_ms] [-f logfile]\n", progname);
+}
+
+void initialize_frame_table() {
+    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
+        frame_table[i].frame_number = -1;
+        frame_table[i].dirty = 0;
+        frame_table[i].reference_bit = 0;
+        frame_table[i].last_used = 0;
+    }
 }
 
 void increment_clock() {
-    shared_clock[1] += 14000000; // Increment clock by 14ms
+    shared_clock[1] += 1000; // nanoseconds
     if (shared_clock[1] >= 1000000000) {
         shared_clock[0]++;
         shared_clock[1] -= 1000000000;
     }
 }
 
-void initialize_frame_table() {
-    for (int i = 0; i < FRAME_COUNT; i++) {
-        frame_table[i].pid = -1; // Mark all frames as free
-        frame_table[i].page_number = -1;
-        frame_table[i].dirty_bit = 0;
-        frame_table[i].last_access_time = 0;
-        frame_table[i].last_access_nano_time = 0;
-    }
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        for (int j = 0; j < PAGE_COUNT; j++) {
-            page_table[i][j] = -1; // Mark all page table entries as invalid
+int find_frame(int page_number) {
+    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
+        if (frame_table[i].frame_number == page_number) {
+            return i;
         }
     }
+    return -1;
 }
 
-int lru_algorithm() {
-    int lru_index = -1;
-    int oldest_time = INT_MAX;
-    int oldest_nano_time = INT_MAX;
-
-    for (int i = 0; i < FRAME_COUNT; i++) {
-        if (frame_table[i].pid != -1) { // Only consider frames in use
-            if (frame_table[i].last_access_time < oldest_time ||
-                (frame_table[i].last_access_time == oldest_time &&
-                 frame_table[i].last_access_nano_time < oldest_nano_time)) {
-                lru_index = i;
-                oldest_time = frame_table[i].last_access_time;
-                oldest_nano_time = frame_table[i].last_access_nano_time;
-            }
+int find_free_frame() {
+    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
+        if (frame_table[i].frame_number == -1) {
+            return i;
         }
     }
+    return -1;
+}
 
-    return lru_index;
+int select_victim_frame() {
+    time_t oldest = time(NULL);
+    int victim = -1;
+    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
+        if (frame_table[i].last_used < oldest) {
+            oldest = frame_table[i].last_used;
+            victim = i;
+        }
+    }
+    return victim;
 }
 
 void handle_memory_request(Message msg) {
-    fprintf(log_file, "oss: P%d requesting %s of address %d at time %d:%d\n",
-            msg.pid, msg.is_write ? "write" : "read", msg.address, shared_clock[0], shared_clock[1]);
+    int page = msg.address / 1024;
+    int frame_index = find_frame(page);
 
-    int page_number = msg.address / 1024;
-    int offset = msg.address % 1024;
-
-    int page_in_memory = 0;
-    for (int i = 0; i < FRAME_COUNT; i++) {
-        if (frame_table[i].pid == msg.pid && frame_table[i].page_number == page_number) {
-            page_in_memory = 1;
-            frame_table[i].last_access_time = shared_clock[0];
-            frame_table[i].last_access_nano_time = shared_clock[1];
-            if (msg.is_write) {
-                frame_table[i].dirty_bit = 1;
-            }
-            fprintf(log_file, "oss: Address %d in frame %d, %s data to P%d at time %d:%d\n",
-                    msg.address, i, msg.is_write ? "writing" : "giving", msg.pid, shared_clock[0], shared_clock[1]);
-            break;
-        }
-    }
-
-    if (!page_in_memory) {
-        fprintf(log_file, "oss: Address %d is not in a frame, pagefault\n", msg.address);
-
-        int free_frame = -1;
-        for (int i = 0; i < FRAME_COUNT; i++) {
-            if (frame_table[i].pid == -1) {
-                free_frame = i;
-                break;
-            }
+    if (frame_index == -1) {
+        int free_index = find_free_frame();
+        if (free_index == -1) {
+            int victim_index = select_victim_frame();
+            fprintf(log_file, "oss: Replacing page in frame %d (page %d)\n",
+                    victim_index, frame_table[victim_index].frame_number);
+            free_index = victim_index;
         }
 
-        int frame_to_replace = free_frame;
-        if (free_frame == -1) {
-            frame_to_replace = lru_algorithm();
-            fprintf(log_file, "oss: Clearing frame %d and swapping in P%d page %d\n",
-                    frame_to_replace, msg.pid, page_number);
-
-            if (frame_table[frame_to_replace].dirty_bit == 1) {
-                fprintf(log_file, "oss: Dirty bit of frame %d set, adding additional time to the clock\n", frame_to_replace);
-                increment_clock();
-            }
-        }
-
-        frame_table[frame_to_replace].pid = msg.pid;
-        frame_table[frame_to_replace].page_number = page_number;
-        frame_table[frame_to_replace].dirty_bit = 0;
-        frame_table[frame_to_replace].last_access_time = shared_clock[0];
-        frame_table[frame_to_replace].last_access_nano_time = shared_clock[1];
-
-        page_table[msg.pid][page_number] = frame_to_replace;
-
-        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %d\n",
-                msg.pid, msg.is_write ? "write" : "read", msg.address);
+        frame_table[free_index].frame_number = page;
+        frame_table[free_index].dirty = msg.is_write;
+        frame_table[free_index].last_used = time(NULL);
+        fprintf(log_file, "oss: P%d requested page %d -> placed in frame %d\n",
+                msg.pid, page, free_index);
+    } else {
+        frame_table[frame_index].reference_bit = 1;
+        frame_table[frame_index].dirty |= msg.is_write;
+        frame_table[frame_index].last_used = time(NULL);
+        fprintf(log_file, "oss: P%d accessed page %d -> already in frame %d\n",
+                msg.pid, page, frame_index);
     }
 }
 
 void check_terminated_children() {
     int status;
     pid_t pid;
-
-    // Loop to reap all terminated child processes
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        fprintf(log_file, "oss: Child process %d terminated.\n", pid);
-
-        // Find and clear the child PID from the child_pids array
         for (int i = 0; i < MAX_PROCESSES; i++) {
             if (child_pids[i] == pid) {
-                child_pids[i] = 0; // Mark the slot as free
+                child_pids[i] = 0;
                 break;
             }
         }
-
-        // Log termination details
-        if (WIFEXITED(status)) {
-            fprintf(log_file, "oss: Child %d exited with status %d.\n", pid, WEXITSTATUS(status));
-        } else if (WIFSIGNALED(status)) {
-            fprintf(log_file, "oss: Child %d terminated by signal %d.\n", pid, WTERMSIG(status));
-        }
     }
 }
 
-void log_memory_layout() {
-    fprintf(log_file, "Current memory layout at time %d:%d is:\n", shared_clock[0], shared_clock[1]);
-    for (int i = 0; i < FRAME_COUNT; i++) {
-        fprintf(log_file, "Frame %d: %s DirtyBit: %d LastRefS: %d LastRefNano: %d\n",
-                i, frame_table[i].pid == -1 ? "No" : "Yes",
-                frame_table[i].dirty_bit,
-                frame_table[i].last_access_time,
-                frame_table[i].last_access_nano_time);
-    }
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        fprintf(log_file, "P%d page table: [", i);
-        for (int j = 0; j < PAGE_COUNT; j++) {
-            fprintf(log_file, " %d", page_table[i][j]);
-        }
-        fprintf(log_file, " ]\n");
-    }
-}
+void cleanup() {
+    fprintf(log_file, "oss: Cleaning up resources and terminating.\n");
 
-void handle_sigint(int sig) {
-    fprintf(stderr, "Master: Caught signal %d, terminating children.\n", sig);
+    // Terminate all remaining children
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (child_pids[i] > 0) {
             kill(child_pids[i], SIGTERM);
+            waitpid(child_pids[i], NULL, 0);
         }
     }
-    while (wait(NULL) > 0);
+
+    // Detach and remove shared memory
     shmdt(shared_clock);
     shmctl(shmid_clock, IPC_RMID, NULL);
+
+    // Remove message queue
     msgctl(msqid, IPC_RMID, NULL);
+
+    // Close log file
     if (log_file) fclose(log_file);
+}
+
+void handle_signal(int sig) {
+    cleanup();
     exit(1);
 }
 
@@ -221,7 +172,6 @@ int main(int argc, char *argv[]) {
                 break;
             case 's':
                 simul_limit = atoi(optarg);
-                if (simul_limit > MAX_PROCESSES) simul_limit = MAX_PROCESSES;
                 break;
             case 'i':
                 launch_interval_ms = atoi(optarg);
@@ -235,52 +185,94 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    signal(SIGINT, handle_sigint);
     srand(time(NULL));
 
-    shmid_clock = shmget(IPC_PRIVATE, sizeof(int) * 2, IPC_CREAT | 0666);
-    if (shmid_clock == -1) {
-        perror("shmget clock");
-        exit(1);
-    }
-    shared_clock = (int *)shmat(shmid_clock, NULL, 0);
-    shared_clock[0] = 0;
-    shared_clock[1] = 0;
-
-    msqid = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
-    if (msqid == -1) {
-        perror("msgget");
-        exit(1);
-    }
+    signal(SIGINT, handle_signal);
+    signal(SIGTERM, handle_signal);
 
     log_file = fopen(log_filename, "w");
     if (!log_file) {
-        perror("fopen log_file");
+        perror("fopen");
+        exit(1);
+    }
+
+    // Shared memory for simulated clock
+    key_t shmkey = ftok("oss.c", 1);
+    shmid_clock = shmget(shmkey, sizeof(int) * 2, IPC_CREAT | 0666);
+    if (shmid_clock == -1) {
+        perror("shmget");
+        exit(1);
+    }
+    shared_clock = (int *)shmat(shmid_clock, NULL, 0);
+    if (shared_clock == (void *)-1) {
+        perror("shmat");
+        exit(1);
+    }
+    shared_clock[0] = 0;
+    shared_clock[1] = 0;
+
+    // Message queue
+    key_t msgkey = ftok("oss.c", 2);
+    msqid = msgget(msgkey, IPC_CREAT | 0666);
+    if (msqid == -1) {
+        perror("msgget");
+        cleanup();
         exit(1);
     }
 
     initialize_frame_table();
 
-    int children_launched = 0;
-    int loop_counter = 0;
+    int active_children = 0;
+    int total_spawned = 0;
+    int next_launch_time = 0;
 
     while (1) {
         increment_clock();
-        check_terminated_children();
+
+        int current_time = shared_clock[0] * 1000 + shared_clock[1] / 1000000;
+        if (active_children < simul_limit && total_spawned < max_children && current_time >= next_launch_time) {
+            pid_t pid = fork();
+            if (pid == 0) {
+                char pid_arg[10];
+                sprintf(pid_arg, "%d", total_spawned);
+                execl("./user", "user", pid_arg, (char *)NULL);
+                perror("execl");
+                exit(1);
+            } else if (pid > 0) {
+                child_pids[total_spawned] = pid;
+                active_children++;
+                total_spawned++;
+                next_launch_time = current_time + launch_interval_ms;
+                fprintf(log_file, "oss: Launched child P%d (PID %d)\n", total_spawned - 1, pid);
+            } else {
+                perror("fork");
+            }
+        }
 
         Message msg;
         if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 0, IPC_NOWAIT) != -1) {
-            handle_memory_request(msg);
+            if (msg.mtype == 1) {
+                handle_memory_request(msg);
+
+                msg.mtype = msg.pid + 1;
+                if (msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0) == -1) {
+                    perror("msgsnd ack");
+                }
+            } else if (msg.mtype == 2) {
+                fprintf(log_file, "oss: P%d is terminating after finishing requests\n", msg.pid);
+                active_children--;
+            }
         }
 
-        if (loop_counter % 50 == 0) {
-            log_memory_layout();
+        check_terminated_children();
+
+        if (total_spawned >= max_children && active_children == 0) {
+            break;
         }
 
-        usleep(launch_interval_ms * 1000);
-        if (++loop_counter > 200) break;
+        usleep(1000);
     }
 
-    handle_sigint(SIGINT);
+    cleanup();
     return 0;
 }

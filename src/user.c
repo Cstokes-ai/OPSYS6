@@ -36,7 +36,7 @@ void generate_memory_request(Message *msg, int pid) {
     int address = (page_number * 1024) + offset; // Calculate memory address
     int is_write = (rand() % 10) < 3 ? 1 : 0;    // 30% chance of write
 
-    msg->mtype = 1;
+    msg->mtype = 1; // Message type for memory request
     msg->pid = pid;
     msg->address = address;
     msg->is_write = is_write;
@@ -92,12 +92,14 @@ int main(int argc, char *argv[]) {
             perror("msgsnd");
             break;
         }
+        printf("User %d: Sent request for address %d (%s)\n", pid, msg.address, msg.is_write ? "write" : "read");
 
         // Wait for response from oss
         if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), pid + 1, 0) == -1) {
             perror("msgrcv");
             break;
         }
+        printf("User %d: Received response for address %d (%s)\n", pid, msg.address, msg.is_write ? "write" : "read");
 
         // Check for termination condition
         if (total_requests >= (1000 + (rand() % 200 - 100))) {
@@ -107,8 +109,13 @@ int main(int argc, char *argv[]) {
             if (msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0) == -1) {
                 perror("msgsnd");
             }
+            printf("User %d: Terminating after %d requests (Reads: %d, Writes: %d)\n",
+                   pid, total_requests, total_reads, total_writes);
             break;
         }
+
+        // Simulate some delay between requests
+        usleep(100000); // 100ms
     }
 
     // Cleanup
