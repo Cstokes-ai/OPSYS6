@@ -1,88 +1,281 @@
-oss: Launched child P0 (PID 1780)
-oss: P0 requested page 21 -> placed in frame 0
-oss: P0 requested page 30 -> placed in frame 1
-oss: P0 accessed page 30 -> already in frame 1
-oss: P0 requested page 20 -> placed in frame 2
-oss: P0 requested page 23 -> placed in frame 3
-oss: P0 requested page 6 -> placed in frame 4
-oss: P0 requested page 16 -> placed in frame 5
-oss: P0 requested page 31 -> placed in frame 6
-oss: P0 accessed page 23 -> already in frame 3
-oss: P0 requested page 24 -> placed in frame 7
-oss: P0 accessed page 24 -> already in frame 7
-oss: P0 requested page 17 -> placed in frame 8
-oss: P0 requested page 3 -> placed in frame 9
-oss: P0 requested page 22 -> placed in frame 10
-oss: P0 accessed page 22 -> already in frame 10
-oss: P0 accessed page 22 -> already in frame 10
-oss: P0 accessed page 24 -> already in frame 7
-oss: P0 accessed page 6 -> already in frame 4
-oss: P0 requested page 7 -> placed in frame 11
-oss: P0 accessed page 17 -> already in frame 8
-oss: P0 accessed page 21 -> already in frame 0
-oss: P0 requested page 18 -> placed in frame 12
-oss: P0 requested page 13 -> placed in frame 13
-oss: P0 requested page 27 -> placed in frame 14
-oss: P0 requested page 9 -> placed in frame 15
-oss: P0 requested page 29 -> placed in frame 16
-oss: P0 accessed page 22 -> already in frame 10
-oss: P0 requested page 8 -> placed in frame 17
-oss: P0 requested page 4 -> placed in frame 18
-oss: P0 accessed page 27 -> already in frame 14
-oss: P0 accessed page 16 -> already in frame 5
-oss: P0 accessed page 16 -> already in frame 5
-oss: P0 accessed page 9 -> already in frame 15
-oss: P0 accessed page 4 -> already in frame 18
-oss: P0 requested page 14 -> placed in frame 19
-oss: P0 accessed page 23 -> already in frame 3
-oss: P0 requested page 0 -> placed in frame 20
-oss: P0 accessed page 21 -> already in frame 0
-oss: P0 requested page 5 -> placed in frame 21
-oss: P0 accessed page 14 -> already in frame 19
-oss: P0 requested page 28 -> placed in frame 22
-oss: P0 accessed page 3 -> already in frame 9
-oss: P0 accessed page 8 -> already in frame 17
-oss: P0 accessed page 0 -> already in frame 20
-oss: P0 requested page 12 -> placed in frame 23
-oss: P0 accessed page 27 -> already in frame 14
-oss: P0 accessed page 27 -> already in frame 14
-oss: P0 requested page 11 -> placed in frame 24
-oss: P0 accessed page 5 -> already in frame 21
-oss: P0 accessed page 6 -> already in frame 4
-oss: P0 requested page 25 -> placed in frame 25
-oss: P0 accessed page 23 -> already in frame 3
-oss: P0 accessed page 27 -> already in frame 14
-oss: P0 accessed page 14 -> already in frame 19
-oss: P0 accessed page 18 -> already in frame 12
-oss: P0 accessed page 5 -> already in frame 21
-oss: P0 accessed page 3 -> already in frame 9
-oss: P0 accessed page 27 -> already in frame 14
-oss: P0 accessed page 8 -> already in frame 17
-oss: P0 requested page 19 -> placed in frame 26
-oss: P0 accessed page 22 -> already in frame 10
-oss: P0 accessed page 3 -> already in frame 9
-oss: P0 accessed page 0 -> already in frame 20
-oss: P0 accessed page 5 -> already in frame 21
-oss: P0 accessed page 3 -> already in frame 9
-oss: P0 accessed page 6 -> already in frame 4
-oss: P0 accessed page 4 -> already in frame 18
-oss: P0 accessed page 25 -> already in frame 25
-oss: P0 accessed page 4 -> already in frame 18
-oss: P0 accessed page 14 -> already in frame 19
-oss: P0 accessed page 8 -> already in frame 17
-oss: P0 accessed page 24 -> already in frame 7
-oss: P0 accessed page 23 -> already in frame 3
-oss: P0 accessed page 12 -> already in frame 23
-oss: P0 requested page 10 -> placed in frame 27
-oss: P0 accessed page 18 -> already in frame 12
-oss: P0 accessed page 22 -> already in frame 10
-oss: P0 requested page 2 -> placed in frame 28
-oss: P0 accessed page 29 -> already in frame 16
-oss: P0 accessed page 18 -> already in frame 12
-oss: P0 accessed page 21 -> already in frame 0
-oss: P0 accessed page 30 -> already in frame 1
-oss: P0 accessed page 5 -> already in frame 21
-oss: P0 requested page 26 -> placed in frame 29
-oss: P0 accessed page 18 -> already in frame 12
-oss: P0 is terminating after finishing requests
+oss: Launched child P0 (PID 16331)
+oss: P0 requesting read of address 16351 at time 0:34733000
+oss: Address 16351 is not in a frame, pagefault
+oss: Indicating to P0 that read has happened to address 16351
+Current memory layout at time 0:34733000 is:
+Occupied DirtyBit LastRefS LastRefNano
+Frame 0: Yes 0 0 34733000
+Frame 1: No 0 0 0
+Frame 2: No 0 0 0
+Frame 3: No 0 0 0
+Frame 4: No 0 0 0
+Frame 5: No 0 0 0
+Frame 6: No 0 0 0
+Frame 7: No 0 0 0
+Frame 8: No 0 0 0
+Frame 9: No 0 0 0
+Frame 10: No 0 0 0
+Frame 11: No 0 0 0
+Frame 12: No 0 0 0
+Frame 13: No 0 0 0
+Frame 14: No 0 0 0
+Frame 15: No 0 0 0
+Frame 16: No 0 0 0
+Frame 17: No 0 0 0
+Frame 18: No 0 0 0
+Frame 19: No 0 0 0
+Frame 20: No 0 0 0
+Frame 21: No 0 0 0
+Frame 22: No 0 0 0
+Frame 23: No 0 0 0
+Frame 24: No 0 0 0
+Frame 25: No 0 0 0
+Frame 26: No 0 0 0
+Frame 27: No 0 0 0
+Frame 28: No 0 0 0
+Frame 29: No 0 0 0
+Frame 30: No 0 0 0
+Frame 31: No 0 0 0
+Frame 32: No 0 0 0
+Frame 33: No 0 0 0
+Frame 34: No 0 0 0
+Frame 35: No 0 0 0
+Frame 36: No 0 0 0
+Frame 37: No 0 0 0
+Frame 38: No 0 0 0
+Frame 39: No 0 0 0
+Frame 40: No 0 0 0
+Frame 41: No 0 0 0
+Frame 42: No 0 0 0
+Frame 43: No 0 0 0
+Frame 44: No 0 0 0
+Frame 45: No 0 0 0
+Frame 46: No 0 0 0
+Frame 47: No 0 0 0
+Frame 48: No 0 0 0
+Frame 49: No 0 0 0
+Frame 50: No 0 0 0
+Frame 51: No 0 0 0
+Frame 52: No 0 0 0
+Frame 53: No 0 0 0
+Frame 54: No 0 0 0
+Frame 55: No 0 0 0
+Frame 56: No 0 0 0
+Frame 57: No 0 0 0
+Frame 58: No 0 0 0
+Frame 59: No 0 0 0
+Frame 60: No 0 0 0
+Frame 61: No 0 0 0
+Frame 62: No 0 0 0
+Frame 63: No 0 0 0
+Frame 64: No 0 0 0
+Frame 65: No 0 0 0
+Frame 66: No 0 0 0
+Frame 67: No 0 0 0
+Frame 68: No 0 0 0
+Frame 69: No 0 0 0
+Frame 70: No 0 0 0
+Frame 71: No 0 0 0
+Frame 72: No 0 0 0
+Frame 73: No 0 0 0
+Frame 74: No 0 0 0
+Frame 75: No 0 0 0
+Frame 76: No 0 0 0
+Frame 77: No 0 0 0
+Frame 78: No 0 0 0
+Frame 79: No 0 0 0
+Frame 80: No 0 0 0
+Frame 81: No 0 0 0
+Frame 82: No 0 0 0
+Frame 83: No 0 0 0
+Frame 84: No 0 0 0
+Frame 85: No 0 0 0
+Frame 86: No 0 0 0
+Frame 87: No 0 0 0
+Frame 88: No 0 0 0
+Frame 89: No 0 0 0
+Frame 90: No 0 0 0
+Frame 91: No 0 0 0
+Frame 92: No 0 0 0
+Frame 93: No 0 0 0
+Frame 94: No 0 0 0
+Frame 95: No 0 0 0
+Frame 96: No 0 0 0
+Frame 97: No 0 0 0
+Frame 98: No 0 0 0
+Frame 99: No 0 0 0
+Frame 100: No 0 0 0
+Frame 101: No 0 0 0
+Frame 102: No 0 0 0
+Frame 103: No 0 0 0
+Frame 104: No 0 0 0
+Frame 105: No 0 0 0
+Frame 106: No 0 0 0
+Frame 107: No 0 0 0
+Frame 108: No 0 0 0
+Frame 109: No 0 0 0
+Frame 110: No 0 0 0
+Frame 111: No 0 0 0
+Frame 112: No 0 0 0
+Frame 113: No 0 0 0
+Frame 114: No 0 0 0
+Frame 115: No 0 0 0
+Frame 116: No 0 0 0
+Frame 117: No 0 0 0
+Frame 118: No 0 0 0
+Frame 119: No 0 0 0
+Frame 120: No 0 0 0
+Frame 121: No 0 0 0
+Frame 122: No 0 0 0
+Frame 123: No 0 0 0
+Frame 124: No 0 0 0
+Frame 125: No 0 0 0
+Frame 126: No 0 0 0
+Frame 127: No 0 0 0
+Frame 128: No 0 0 0
+Frame 129: No 0 0 0
+Frame 130: No 0 0 0
+Frame 131: No 0 0 0
+Frame 132: No 0 0 0
+Frame 133: No 0 0 0
+Frame 134: No 0 0 0
+Frame 135: No 0 0 0
+Frame 136: No 0 0 0
+Frame 137: No 0 0 0
+Frame 138: No 0 0 0
+Frame 139: No 0 0 0
+Frame 140: No 0 0 0
+Frame 141: No 0 0 0
+Frame 142: No 0 0 0
+Frame 143: No 0 0 0
+Frame 144: No 0 0 0
+Frame 145: No 0 0 0
+Frame 146: No 0 0 0
+Frame 147: No 0 0 0
+Frame 148: No 0 0 0
+Frame 149: No 0 0 0
+Frame 150: No 0 0 0
+Frame 151: No 0 0 0
+Frame 152: No 0 0 0
+Frame 153: No 0 0 0
+Frame 154: No 0 0 0
+Frame 155: No 0 0 0
+Frame 156: No 0 0 0
+Frame 157: No 0 0 0
+Frame 158: No 0 0 0
+Frame 159: No 0 0 0
+Frame 160: No 0 0 0
+Frame 161: No 0 0 0
+Frame 162: No 0 0 0
+Frame 163: No 0 0 0
+Frame 164: No 0 0 0
+Frame 165: No 0 0 0
+Frame 166: No 0 0 0
+Frame 167: No 0 0 0
+Frame 168: No 0 0 0
+Frame 169: No 0 0 0
+Frame 170: No 0 0 0
+Frame 171: No 0 0 0
+Frame 172: No 0 0 0
+Frame 173: No 0 0 0
+Frame 174: No 0 0 0
+Frame 175: No 0 0 0
+Frame 176: No 0 0 0
+Frame 177: No 0 0 0
+Frame 178: No 0 0 0
+Frame 179: No 0 0 0
+Frame 180: No 0 0 0
+Frame 181: No 0 0 0
+Frame 182: No 0 0 0
+Frame 183: No 0 0 0
+Frame 184: No 0 0 0
+Frame 185: No 0 0 0
+Frame 186: No 0 0 0
+Frame 187: No 0 0 0
+Frame 188: No 0 0 0
+Frame 189: No 0 0 0
+Frame 190: No 0 0 0
+Frame 191: No 0 0 0
+Frame 192: No 0 0 0
+Frame 193: No 0 0 0
+Frame 194: No 0 0 0
+Frame 195: No 0 0 0
+Frame 196: No 0 0 0
+Frame 197: No 0 0 0
+Frame 198: No 0 0 0
+Frame 199: No 0 0 0
+Frame 200: No 0 0 0
+Frame 201: No 0 0 0
+Frame 202: No 0 0 0
+Frame 203: No 0 0 0
+Frame 204: No 0 0 0
+Frame 205: No 0 0 0
+Frame 206: No 0 0 0
+Frame 207: No 0 0 0
+Frame 208: No 0 0 0
+Frame 209: No 0 0 0
+Frame 210: No 0 0 0
+Frame 211: No 0 0 0
+Frame 212: No 0 0 0
+Frame 213: No 0 0 0
+Frame 214: No 0 0 0
+Frame 215: No 0 0 0
+Frame 216: No 0 0 0
+Frame 217: No 0 0 0
+Frame 218: No 0 0 0
+Frame 219: No 0 0 0
+Frame 220: No 0 0 0
+Frame 221: No 0 0 0
+Frame 222: No 0 0 0
+Frame 223: No 0 0 0
+Frame 224: No 0 0 0
+Frame 225: No 0 0 0
+Frame 226: No 0 0 0
+Frame 227: No 0 0 0
+Frame 228: No 0 0 0
+Frame 229: No 0 0 0
+Frame 230: No 0 0 0
+Frame 231: No 0 0 0
+Frame 232: No 0 0 0
+Frame 233: No 0 0 0
+Frame 234: No 0 0 0
+Frame 235: No 0 0 0
+Frame 236: No 0 0 0
+Frame 237: No 0 0 0
+Frame 238: No 0 0 0
+Frame 239: No 0 0 0
+Frame 240: No 0 0 0
+Frame 241: No 0 0 0
+Frame 242: No 0 0 0
+Frame 243: No 0 0 0
+Frame 244: No 0 0 0
+Frame 245: No 0 0 0
+Frame 246: No 0 0 0
+Frame 247: No 0 0 0
+Frame 248: No 0 0 0
+Frame 249: No 0 0 0
+Frame 250: No 0 0 0
+Frame 251: No 0 0 0
+Frame 252: No 0 0 0
+Frame 253: No 0 0 0
+Frame 254: No 0 0 0
+Frame 255: No 0 0 0
+P0 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P1 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P2 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P3 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P4 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P5 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P6 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P7 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P8 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P9 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P10 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P11 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P12 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P13 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P14 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P15 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P16 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+P17 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
 oss: Cleaning up resources and terminating.
