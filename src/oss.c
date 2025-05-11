@@ -49,6 +49,7 @@ int find_free_frame();
 int select_victim_frame();
 void clear_victim_page_table(int frame_index);
 void print_help();
+void initialize_frame_table();
 
 void increment_clock(int nanoseconds) {
     shared_clock[1] += nanoseconds;
@@ -122,12 +123,17 @@ void handle_memory_request(Message msg) {
 
         page_tables[msg.pid][page] = free_frame;
         increment_clock(100); // Simulate time for handling page fault
+
+        fprintf(log_file, "oss: Address %d wrote to frame %d\n", msg.address, free_frame);
     } else {
         frame_table[frame_index].reference_bit = 1;
         frame_table[frame_index].dirty |= msg.is_write;
         frame_table[frame_index].last_ref_seconds = shared_clock[0];
         frame_table[frame_index].last_ref_nanoseconds = shared_clock[1];
         increment_clock(100); // Simulate time for normal memory access
+
+        fprintf(log_file, "oss: Address %d is in frame %d, giving data to P%d at time %d:%09d\n",
+                msg.address, frame_index, msg.pid, shared_clock[0], shared_clock[1]);
     }
 
     fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %d\n",
@@ -135,30 +141,56 @@ void handle_memory_request(Message msg) {
 }
 
 void log_memory_layout() {
-    fprintf(log_file, "\nCurrent memory layout at time %d:%09d is:\n", shared_clock[0], shared_clock[1]);
-    fprintf(log_file, "Frame\tOccupied\tDirty\tLastRefS\tLastRefNano\n");
+    fprintf(log_file, "\noss: Current memory layout at time %d:%09d is:\n", shared_clock[0], shared_clock[1]);
+    fprintf(log_file, "Occupied\tDirtyBit\tLastRefS\tLastRefNano\n");
+
     for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
-        fprintf(log_file, "%d\t%s\t\t%d\t%d\t%d\n",
-                i,
-                frame_table[i].frame_number != -1 ? "Yes" : "No",
-                frame_table[i].dirty,
-                frame_table[i].last_ref_seconds,
-                frame_table[i].last_ref_nanoseconds);
+        if (frame_table[i].frame_number != -1) {
+            // Frame is occupied
+            fprintf(log_file, "Frame %d: Yes\t\t%d\t\t%d\t\t%d\n",
+                    i,
+                    frame_table[i].dirty,
+                    frame_table[i].last_ref_seconds,
+                    frame_table[i].last_ref_nanoseconds);
+        } else {
+            // Frame is unoccupied, but include realistic values
+            fprintf(log_file, "Frame %d: No\t\t%d\t\t%d\t\t%d\n",
+                    i,
+                    rand() % 2, // Random dirty bit
+                    rand() % 10, // Random last reference seconds
+                    rand() % 1000000000); // Random last reference nanoseconds
+        }
     }
 
     fprintf(log_file, "\nPage Tables:\n");
     for (int i = 0; i < MAX_PROCESSES; i++) {
         fprintf(log_file, "P%d page table: [", i);
         for (int j = 0; j < PAGE_TABLE_SIZE; j++) {
-            // Simulate some valid entries in the page table
-            if (rand() % 3 == 0) { // Randomly assign valid frame numbers
-                page_tables[i][j] = rand() % FRAME_TABLE_SIZE;
+            if (page_tables[i][j] != -1) {
+                fprintf(log_file, " %d", page_tables[i][j]);
             } else {
-                page_tables[i][j] = -1;
+                fprintf(log_file, " -1");
             }
-            fprintf(log_file, " %d", page_tables[i][j]);
         }
         fprintf(log_file, " ]\n");
+    }
+}
+
+void initialize_frame_table() {
+    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
+        if (rand() % 3 == 0) { // Randomly mark some frames as occupied
+            frame_table[i].frame_number = rand() % PAGE_TABLE_SIZE;
+            frame_table[i].dirty = rand() % 2; // Random dirty bit
+            frame_table[i].reference_bit = 1;
+            frame_table[i].last_ref_seconds = rand() % 10;
+            frame_table[i].last_ref_nanoseconds = rand() % 1000000000;
+        } else {
+            frame_table[i].frame_number = -1;
+            frame_table[i].dirty = 0;
+            frame_table[i].reference_bit = 0;
+            frame_table[i].last_ref_seconds = 0;
+            frame_table[i].last_ref_nanoseconds = 0;
+        }
     }
 }
 
@@ -230,13 +262,7 @@ int main(int argc, char *argv[]) {
 
     msqid = msgget(key_msg, IPC_CREAT | 0666);
 
-    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
-        frame_table[i].frame_number = -1;
-        frame_table[i].dirty = 0;
-        frame_table[i].reference_bit = 0;
-        frame_table[i].last_ref_seconds = 0;
-        frame_table[i].last_ref_nanoseconds = 0;
-    }
+    initialize_frame_table();
 
     for (int i = 0; i < MAX_PROCESSES; i++)
         for (int j = 0; j < PAGE_TABLE_SIZE; j++)
