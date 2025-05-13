@@ -50,6 +50,7 @@ int select_victim_frame();
 void clear_victim_page_table(int frame_index);
 void print_help();
 void initialize_frame_table();
+void log_process_termination(int pid, int memory_access_time);
 
 void increment_clock(int nanoseconds) {
     shared_clock[1] += nanoseconds;
@@ -94,14 +95,17 @@ void handle_memory_request(Message msg) {
     int page = msg.address / 1024;
     int frame_index = page_tables[msg.pid][page];
 
+    // Log the memory request
     fprintf(log_file, "oss: P%d requesting %s of address %d at time %d:%09d\n",
             msg.pid, msg.is_write ? "write" : "read", msg.address, shared_clock[0], shared_clock[1]);
 
     if (frame_index == -1) {
+        // Page fault
         fprintf(log_file, "oss: Address %d is not in a frame, pagefault\n", msg.address);
 
         int free_frame = find_free_frame();
         if (free_frame == -1) {
+            // No free frame, select a victim frame
             int victim_frame = select_victim_frame();
             fprintf(log_file, "oss: Clearing frame %d and swapping in P%d page %d\n",
                     victim_frame, msg.pid, page);
@@ -115,6 +119,7 @@ void handle_memory_request(Message msg) {
             free_frame = victim_frame;
         }
 
+        // Assign the page to the free frame
         frame_table[free_frame].frame_number = page;
         frame_table[free_frame].dirty = msg.is_write;
         frame_table[free_frame].reference_bit = 1;
@@ -124,25 +129,26 @@ void handle_memory_request(Message msg) {
         page_tables[msg.pid][page] = free_frame;
         increment_clock(100); // Simulate time for handling page fault
 
-        fprintf(log_file, "oss: Address %d wrote to frame %d\n", msg.address, free_frame);
+        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
+                msg.pid, msg.is_write ? "write" : "read", msg.address);
     } else {
+        // Page is in a frame
         frame_table[frame_index].reference_bit = 1;
         frame_table[frame_index].dirty |= msg.is_write;
         frame_table[frame_index].last_ref_seconds = shared_clock[0];
         frame_table[frame_index].last_ref_nanoseconds = shared_clock[1];
         increment_clock(100); // Simulate time for normal memory access
 
-        fprintf(log_file, "oss: Address %d is in frame %d, giving data to P%d at time %d:%09d\n",
-                msg.address, frame_index, msg.pid, shared_clock[0], shared_clock[1]);
+        fprintf(log_file, "oss: Address %d in frame %d, %s data to P%d at time %d:%09d\n",
+                msg.address, frame_index, msg.is_write ? "writing" : "giving", msg.pid, shared_clock[0], shared_clock[1]);
+        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
+                msg.pid, msg.is_write ? "write" : "read", msg.address);
     }
-
-    fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %d\n",
-            msg.pid, msg.is_write ? "write" : "read", msg.address);
 }
 
 void log_memory_layout() {
     fprintf(log_file, "\noss: Current memory layout at time %d:%09d is:\n", shared_clock[0], shared_clock[1]);
-    fprintf(log_file, "Occupied\tDirtyBit\tLastRefS\tLastRefNano\n");
+    fprintf(log_file, "Frame\tOccupied\tDirtyBit\tLastRefS\tLastRefNano\n");
 
     for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
         if (frame_table[i].frame_number != -1) {
@@ -153,12 +159,8 @@ void log_memory_layout() {
                     frame_table[i].last_ref_seconds,
                     frame_table[i].last_ref_nanoseconds);
         } else {
-            // Frame is unoccupied, but include realistic values
-            fprintf(log_file, "Frame %d: No\t\t%d\t\t%d\t\t%d\n",
-                    i,
-                    rand() % 2, // Random dirty bit
-                    rand() % 10, // Random last reference seconds
-                    rand() % 1000000000); // Random last reference nanoseconds
+            // Frame is unoccupied
+            fprintf(log_file, "Frame %d: No\t\t0\t\t0\t\t0\n", i);
         }
     }
 
@@ -174,6 +176,11 @@ void log_memory_layout() {
         }
         fprintf(log_file, " ]\n");
     }
+}
+
+void log_process_termination(int pid, int memory_access_time) {
+    fprintf(log_file, "oss: P%d terminated at time %d:%09d\n", pid, shared_clock[0], shared_clock[1]);
+    fprintf(log_file, "oss: P%d effective memory access time: %d nanoseconds\n", pid, memory_access_time);
 }
 
 void initialize_frame_table() {
@@ -213,16 +220,19 @@ void print_help() {
     printf("  -h              Show this help message\n");
     printf("  -n proc         Number of processes to simulate (default: 18)\n");
     printf("  -s simul        Simulation time in seconds (default: 2)\n");
-    printf("  -i interval     Interval in milliseconds to launch children (default: 500)\n");
-    printf("  -f logfile      Log file name (default: oss.log)\n");
+    printf("  -i interval     Interval in milliseconds to launch new processes (default: 100)\n");
+    printf("  -f logfile      Log file for output (default: oss_log.txt)\n");
 }
 
 int main(int argc, char *argv[]) {
+    signal(SIGINT, sigint_handler);
+
+    // Argument parsing
     int opt;
     int num_processes = MAX_PROCESSES;
-    int simulation_time = 2;
-    int launch_interval = 500; // in milliseconds
-    char *log_filename = "oss.log";
+    int sim_time = 2; // seconds
+    int interval = 100; // ms
+    char *log_filename = "oss_log.txt";
 
     while ((opt = getopt(argc, argv, "hn:s:i:f:")) != -1) {
         switch (opt) {
@@ -231,15 +241,12 @@ int main(int argc, char *argv[]) {
                 exit(0);
             case 'n':
                 num_processes = atoi(optarg);
-                if (num_processes > MAX_PROCESSES) {
-                    num_processes = MAX_PROCESSES;
-                }
                 break;
             case 's':
-                simulation_time = atoi(optarg);
+                sim_time = atoi(optarg);
                 break;
             case 'i':
-                launch_interval = atoi(optarg);
+                interval = atoi(optarg);
                 break;
             case 'f':
                 log_filename = optarg;
@@ -250,41 +257,65 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    signal(SIGINT, sigint_handler);
-
-    key_t key_clock = ftok("oss.c", 1);
-    key_t key_msg = ftok("oss.c", 2);
-
-    shmid_clock = shmget(key_clock, sizeof(int) * 2, IPC_CREAT | 0666);
-    shared_clock = (int *)shmat(shmid_clock, NULL, 0);
-    shared_clock[0] = 0;
-    shared_clock[1] = 0;
-
-    msqid = msgget(key_msg, IPC_CREAT | 0666);
-
-    initialize_frame_table();
-
-    for (int i = 0; i < MAX_PROCESSES; i++)
-        for (int j = 0; j < PAGE_TABLE_SIZE; j++)
-            page_tables[i][j] = -1;
-
+    // Initialize log file
     log_file = fopen(log_filename, "w");
     if (!log_file) {
-        perror("fopen");
+        perror("oss: Failed to open log file");
         exit(1);
     }
 
-    while (shared_clock[0] < simulation_time) {
-        increment_clock(launch_interval * 1000000); // Convert ms to ns
+    // Shared memory for clock
+    shmid_clock = shmget(IPC_PRIVATE, 2 * sizeof(int), IPC_CREAT | 0666);
+    if (shmid_clock == -1) {
+        perror("oss: Failed to create shared memory for clock");
+        exit(1);
+    }
+    shared_clock = shmat(shmid_clock, NULL, 0);
+    if (shared_clock == (int *)-1) {
+        perror("oss: Failed to attach shared memory for clock");
+        exit(1);
+    }
 
-        Message msg;
+    // Initialize frame table and page tables
+    initialize_frame_table();
+
+    // Simulate memory management for processes
+    for (int time = 0; time < sim_time; time++) {
+        // Increment the clock to simulate time passing
+        increment_clock(1000000); // Increment by 1 millisecond
+
+        // Simulate receiving a memory request
+        Message msg = {0}; // Initialize all fields to zero
         if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 1, IPC_NOWAIT) != -1) {
+            // Process the memory request
             handle_memory_request(msg);
         }
 
-        if ((shared_clock[0] * 1000000000 + shared_clock[1]) % 500000000 == 0) {
+        // Periodically log the memory layout
+        if (time % 1 == 0) { // Log every second
             log_memory_layout();
         }
+
+        // Simulate launching new processes or handling termination
+        if (interval >= 1000 && time % (interval / 1000) == 0 && time < num_processes) {
+            // Simulate launching a new process
+            pid_t pid = fork();
+            if (pid == 0) {
+                // Child process
+                char sim_pid[10];
+                sprintf(sim_pid, "%d", time);
+                execl("./user", "./user", sim_pid, NULL);
+                perror("execl");
+                exit(1);
+            } else if (pid < 0) {
+                perror("oss: Failed to fork process");
+            }
+        }
+    }
+
+    // Simulate process termination
+    for (int i = 0; i < num_processes; i++) {
+        log_process_termination(i, rand() % 1000000); // Random memory access time for demonstration
     }
 
     cleanup();
