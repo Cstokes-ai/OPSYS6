@@ -12,312 +12,260 @@
 #include <getopt.h>
 
 #define MAX_PROCESSES 18
-#define PAGE_TABLE_SIZE 32
-#define FRAME_TABLE_SIZE 256
-#define MSGSZ 128
-#define DISK_IO_TIME 14000000 // 14 ms in nanoseconds
-
-typedef struct {
-    int frame_number;
-    int dirty;
-    int reference_bit;
-    int last_ref_seconds;
-    int last_ref_nanoseconds;
-} Frame;
+#define MAX_FRAMES 256
+#define PAGE_SIZE 1024
+#define PAGES_PER_PROCESS 32
+#define DISK_IO_TIME_NS 14000000
 
 typedef struct {
     long mtype;
     int pid;
     int address;
-    int is_write;
+    int write; // 1 = write, 0 = read
 } Message;
 
-// Global variables
-int shmid_clock, msqid;
-int *shared_clock;
-Frame frame_table[FRAME_TABLE_SIZE];
-int page_tables[MAX_PROCESSES][PAGE_TABLE_SIZE];
+typedef struct {
+    int occupied;
+    int pid;
+    int page;
+    int dirty;
+    int lastRefSec;
+    int lastRefNano;
+} FrameTableEntry;
+
+typedef struct {
+    int pageTable[PAGES_PER_PROCESS];
+} PCB;
+
+int shmid_clock, shmid_pcbs;
+int *sim_clock;
+PCB *pcbs;
+FrameTableEntry frameTable[MAX_FRAMES];
+int msqid;
 FILE *log_file;
+pid_t child_pids[MAX_PROCESSES] = {0};
+int launched = 0, total_created = 0;
+int max_children = 100, simul_limit = 5, launch_interval_ms = 1000;
+char log_filename[256] = "oss.log";
 
-// Function declarations
-void increment_clock(int nanoseconds);
-void handle_memory_request(Message msg);
-void log_memory_layout();
-void cleanup();
-void sigint_handler(int sig);
-int find_free_frame();
-int select_victim_frame();
-void clear_victim_page_table(int frame_index);
-void print_help();
-void initialize_frame_table();
-void log_process_termination(int pid, int memory_access_time);
-
-void increment_clock(int nanoseconds) {
-    shared_clock[1] += nanoseconds;
-    while (shared_clock[1] >= 1000000000) {
-        shared_clock[0]++;
-        shared_clock[1] -= 1000000000;
-    }
+void print_usage(const char *progname) {
+    printf("Usage: %s [-h] [-n proc] [-s simul] [-i intervalMs] [-f logfile]\n", progname);
 }
 
-int find_free_frame() {
-    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
-        if (frame_table[i].frame_number == -1) {
-            return i;
-        }
-    }
-    return -1;
+void advance_clock(int sec, int ns) {
+    sim_clock[1] += ns;
+    sim_clock[0] += sec + sim_clock[1] / 1000000000;
+    sim_clock[1] %= 1000000000;
 }
 
-int select_victim_frame() {
-    int victim = 0;
-    for (int i = 1; i < FRAME_TABLE_SIZE; i++) {
-        if (frame_table[i].last_ref_seconds < frame_table[victim].last_ref_seconds ||
-            (frame_table[i].last_ref_seconds == frame_table[victim].last_ref_seconds &&
-             frame_table[i].last_ref_nanoseconds < frame_table[victim].last_ref_nanoseconds)) {
-            victim = i;
-        }
-    }
-    return victim;
-}
-
-void clear_victim_page_table(int frame_index) {
+void handle_sigint(int sig) {
+    fprintf(stderr, "Master: Terminating on signal %d.\n", sig);
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        for (int j = 0; j < PAGE_TABLE_SIZE; j++) {
-            if (page_tables[i][j] == frame_index) {
-                page_tables[i][j] = -1;
-            }
-        }
+        if (child_pids[i] > 0) kill(child_pids[i], SIGTERM);
     }
-}
-
-void handle_memory_request(Message msg) {
-    int page = msg.address / 1024;
-    int frame_index = page_tables[msg.pid][page];
-
-    // Log the memory request
-    fprintf(log_file, "oss: P%d requesting %s of address %d at time %d:%09d\n",
-            msg.pid, msg.is_write ? "write" : "read", msg.address, shared_clock[0], shared_clock[1]);
-
-    if (frame_index == -1) {
-        // Page fault
-        fprintf(log_file, "oss: Address %d is not in a frame, pagefault\n", msg.address);
-
-        int free_frame = find_free_frame();
-        if (free_frame == -1) {
-            // No free frame, select a victim frame
-            int victim_frame = select_victim_frame();
-            fprintf(log_file, "oss: Clearing frame %d and swapping in P%d page %d\n",
-                    victim_frame, msg.pid, page);
-
-            if (frame_table[victim_frame].dirty) {
-                fprintf(log_file, "oss: Dirty bit of frame %d set, adding additional time to the clock\n", victim_frame);
-                increment_clock(DISK_IO_TIME);
-            }
-
-            clear_victim_page_table(victim_frame);
-            free_frame = victim_frame;
-        }
-
-        // Assign the page to the free frame
-        frame_table[free_frame].frame_number = page;
-        frame_table[free_frame].dirty = msg.is_write;
-        frame_table[free_frame].reference_bit = 1;
-        frame_table[free_frame].last_ref_seconds = shared_clock[0];
-        frame_table[free_frame].last_ref_nanoseconds = shared_clock[1];
-
-        page_tables[msg.pid][page] = free_frame;
-        increment_clock(100); // Simulate time for handling page fault
-
-        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
-                msg.pid, msg.is_write ? "write" : "read", msg.address);
-    } else {
-        // Page is in a frame
-        frame_table[frame_index].reference_bit = 1;
-        frame_table[frame_index].dirty |= msg.is_write;
-        frame_table[frame_index].last_ref_seconds = shared_clock[0];
-        frame_table[frame_index].last_ref_nanoseconds = shared_clock[1];
-        increment_clock(100); // Simulate time for normal memory access
-
-        fprintf(log_file, "oss: Address %d in frame %d, %s data to P%d at time %d:%09d\n",
-                msg.address, frame_index, msg.is_write ? "writing" : "giving", msg.pid, shared_clock[0], shared_clock[1]);
-        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
-                msg.pid, msg.is_write ? "write" : "read", msg.address);
-    }
-}
-
-void log_memory_layout() {
-    fprintf(log_file, "\noss: Current memory layout at time %d:%09d is:\n", shared_clock[0], shared_clock[1]);
-    fprintf(log_file, "Frame\tOccupied\tDirtyBit\tLastRefS\tLastRefNano\n");
-
-    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
-        if (frame_table[i].frame_number != -1) {
-            // Frame is occupied
-            fprintf(log_file, "Frame %d: Yes\t\t%d\t\t%d\t\t%d\n",
-                    i,
-                    frame_table[i].dirty,
-                    frame_table[i].last_ref_seconds,
-                    frame_table[i].last_ref_nanoseconds);
-        } else {
-            // Frame is unoccupied
-            fprintf(log_file, "Frame %d: No\t\t0\t\t0\t\t0\n", i);
-        }
-    }
-
-    fprintf(log_file, "\nPage Tables:\n");
-    for (int i = 0; i < MAX_PROCESSES; i++) {
-        fprintf(log_file, "P%d page table: [", i);
-        for (int j = 0; j < PAGE_TABLE_SIZE; j++) {
-            if (page_tables[i][j] != -1) {
-                fprintf(log_file, " %d", page_tables[i][j]);
-            } else {
-                fprintf(log_file, " -1");
-            }
-        }
-        fprintf(log_file, " ]\n");
-    }
-}
-
-void log_process_termination(int pid, int memory_access_time) {
-    fprintf(log_file, "oss: P%d terminated at time %d:%09d\n", pid, shared_clock[0], shared_clock[1]);
-    fprintf(log_file, "oss: P%d effective memory access time: %d nanoseconds\n", pid, memory_access_time);
-}
-
-void initialize_frame_table() {
-    for (int i = 0; i < FRAME_TABLE_SIZE; i++) {
-        if (rand() % 3 == 0) { // Randomly mark some frames as occupied
-            frame_table[i].frame_number = rand() % PAGE_TABLE_SIZE;
-            frame_table[i].dirty = rand() % 2; // Random dirty bit
-            frame_table[i].reference_bit = 1;
-            frame_table[i].last_ref_seconds = rand() % 10;
-            frame_table[i].last_ref_nanoseconds = rand() % 1000000000;
-        } else {
-            frame_table[i].frame_number = -1;
-            frame_table[i].dirty = 0;
-            frame_table[i].reference_bit = 0;
-            frame_table[i].last_ref_seconds = 0;
-            frame_table[i].last_ref_nanoseconds = 0;
-        }
-    }
-}
-
-void cleanup() {
-    shmdt(shared_clock);
-    shmctl(shmid_clock, IPC_RMID, NULL);
-    msgctl(msqid, IPC_RMID, NULL);
+    while (wait(NULL) > 0);
     if (log_file) fclose(log_file);
-}
-
-void sigint_handler(int sig) {
-    printf("oss: Caught SIGINT, cleaning up\n");
-    cleanup();
+    shmdt(sim_clock); shmctl(shmid_clock, IPC_RMID, NULL);
+    shmdt(pcbs); shmctl(shmid_pcbs, IPC_RMID, NULL);
+    msgctl(msqid, IPC_RMID, NULL);
     exit(0);
 }
 
-void print_help() {
-    printf("Usage: oss [-h] [-n proc] [-s simul] [-i interval] [-f logfile]\n");
-    printf("Options:\n");
-    printf("  -h              Show this help message\n");
-    printf("  -n proc         Number of processes to simulate (default: 18)\n");
-    printf("  -s simul        Simulation time in seconds (default: 2)\n");
-    printf("  -i interval     Interval in milliseconds to launch new processes (default: 100)\n");
-    printf("  -f logfile      Log file for output (default: oss_log.txt)\n");
+void init_shared_resources() {
+    shmid_clock = shmget(IPC_PRIVATE, sizeof(int) * 2, IPC_CREAT | 0666);
+    sim_clock = (int *)shmat(shmid_clock, NULL, 0);
+    sim_clock[0] = sim_clock[1] = 0;
+
+    shmid_pcbs = shmget(IPC_PRIVATE, sizeof(PCB) * MAX_PROCESSES, IPC_CREAT | 0666);
+    pcbs = (PCB *)shmat(shmid_pcbs, NULL, 0);
+    for (int i = 0; i < MAX_PROCESSES; i++)
+        for (int j = 0; j < PAGES_PER_PROCESS; j++)
+            pcbs[i].pageTable[j] = -1;
+
+    msqid = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
 }
 
-int main(int argc, char *argv[]) {
-    signal(SIGINT, sigint_handler);
+int find_free_frame() {
+    for (int i = 0; i < MAX_FRAMES; i++)
+        if (!frameTable[i].occupied) return i;
+    return -1;
+}
 
-    // Argument parsing
-    int opt;
-    int num_processes = MAX_PROCESSES;
-    int sim_time = 2; // seconds
-    int interval = 100; // ms
-    char *log_filename = "oss_log.txt";
-
-    while ((opt = getopt(argc, argv, "hn:s:i:f:")) != -1) {
-        switch (opt) {
-            case 'h':
-                print_help();
-                exit(0);
-            case 'n':
-                num_processes = atoi(optarg);
-                break;
-            case 's':
-                sim_time = atoi(optarg);
-                break;
-            case 'i':
-                interval = atoi(optarg);
-                break;
-            case 'f':
-                log_filename = optarg;
-                break;
-            default:
-                print_help();
-                exit(1);
+int find_lru_frame() {
+    int lru = -1;
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        if (!frameTable[i].occupied) continue;
+        if (lru == -1 ||
+            frameTable[i].lastRefSec < frameTable[lru].lastRefSec ||
+            (frameTable[i].lastRefSec == frameTable[lru].lastRefSec &&
+             frameTable[i].lastRefNano < frameTable[lru].lastRefNano)) {
+            lru = i;
         }
     }
+    return lru;
+}
 
-    // Initialize log file
-    log_file = fopen(log_filename, "w");
-    if (!log_file) {
-        perror("oss: Failed to open log file");
-        exit(1);
+void print_memory_map() {
+    fprintf(log_file, "\nCurrent memory layout at time %d:%d is:\n", sim_clock[0], sim_clock[1]);
+    fprintf(log_file, "Occupied DirtyBit LastRefS LastRefNano\n");
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        FrameTableEntry *f = &frameTable[i];
+        if (f->occupied)
+            fprintf(log_file, "Frame %d: Yes %d %d %d\n", i, f->dirty, f->lastRefSec, f->lastRefNano);
+        else
+            fprintf(log_file, "Frame %d: No  0 0\n", i);
     }
 
-    // Shared memory for clock
-    shmid_clock = shmget(IPC_PRIVATE, 2 * sizeof(int), IPC_CREAT | 0666);
-    if (shmid_clock == -1) {
-        perror("oss: Failed to create shared memory for clock");
-        exit(1);
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (child_pids[i] > 0) {
+            fprintf(log_file, "P%d page table: [ ", i);
+            for (int j = 0; j < PAGES_PER_PROCESS; j++)
+                fprintf(log_file, "%d ", pcbs[i].pageTable[j]);
+            fprintf(log_file, "]\n");
+        }
     }
-    shared_clock = shmat(shmid_clock, NULL, 0);
-    if (shared_clock == (int *)-1) {
-        perror("oss: Failed to attach shared memory for clock");
-        exit(1);
-    }
+    fflush(log_file);
+}
 
-    // Initialize frame table and page tables
-    initialize_frame_table();
+void handle_memory_request(Message msg) {
+    int pid = msg.pid;
+    int addr = msg.address;
+    int page = addr / PAGE_SIZE;
+    int offset = addr % PAGE_SIZE;
+    int frame = pcbs[pid].pageTable[page];
 
-    // Simulate memory management for processes
-    for (int time = 0; time < sim_time; time++) {
-        // Increment the clock to simulate time passing
-        increment_clock(1000000); // Increment by 1 millisecond
+    fprintf(log_file, "oss: P%d requesting %s of address %05d at time %d:%d\n",
+            pid, msg.write ? "write" : "read", addr, sim_clock[0], sim_clock[1]);
 
-        // Simulate receiving a memory request
-        Message msg = {0}; // Initialize all fields to zero
-        if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 1, IPC_NOWAIT) != -1) {
-            // Process the memory request
-            handle_memory_request(msg);
+    if (frame != -1) {
+        frameTable[frame].lastRefSec = sim_clock[0];
+        frameTable[frame].lastRefNano = sim_clock[1];
+        if (msg.write) frameTable[frame].dirty = 1;
+
+        fprintf(log_file, "oss: Address %05d in frame %d, %s data to P%d at time %d:%d\n",
+                addr, frame, msg.write ? "writing" : "giving", pid, sim_clock[0], sim_clock[1]);
+
+        advance_clock(0, 100);
+        msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
+    } else {
+        fprintf(log_file, "oss: Address %05d is not in a frame, pagefault\n", addr);
+
+        int f = find_free_frame();
+        if (f == -1) {
+            f = find_lru_frame();
+            FrameTableEntry *victim = &frameTable[f];
+            fprintf(log_file, "oss: Clearing frame %d and swapping in P%d page %d\n", f, pid, page);
+            if (victim->dirty) {
+                fprintf(log_file, "oss: Dirty bit of frame %d set, adding additional time to the clock\n", f);
+                advance_clock(0, DISK_IO_TIME_NS);
+            }
+            pcbs[victim->pid].pageTable[victim->page] = -1;
         }
 
-        // Periodically log the memory layout
-        if (time % 1 == 0) { // Log every second
-            log_memory_layout();
-        }
+        frameTable[f] = (FrameTableEntry){
+            .occupied = 1, .pid = pid, .page = page, .dirty = msg.write,
+            .lastRefSec = sim_clock[0], .lastRefNano = sim_clock[1]
+        };
+        pcbs[pid].pageTable[page] = f;
 
-        // Simulate launching new processes or handling termination
-        if (interval >= 1000 && time % (interval / 1000) == 0 && time < num_processes) {
-            // Simulate launching a new process
-            pid_t pid = fork();
-            if (pid == 0) {
-                // Child process
-                char sim_pid[10];
-                sprintf(sim_pid, "%d", time);
-                execl("./user", "./user", sim_pid, NULL);
-                perror("execl");
-                exit(1);
-            } else if (pid < 0) {
-                perror("oss: Failed to fork process");
+        advance_clock(0, DISK_IO_TIME_NS);
+        fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
+                pid, msg.write ? "write" : "read", addr);
+        msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
+    }
+    fflush(log_file);
+}
+
+void launch_child(int i) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        char msq_str[16], clk_str[16], pcb_str[16], idx_str[8];
+        sprintf(msq_str, "%d", msqid);
+        sprintf(clk_str, "%d", shmid_clock);
+        sprintf(pcb_str, "%d", shmid_pcbs);
+        sprintf(idx_str, "%d", i);
+        execl("./user", "./user", msq_str, clk_str, pcb_str, idx_str, NULL);
+        perror("execl");
+        exit(1);
+    } else {
+        child_pids[i] = pid;
+        launched++;
+        total_created++;
+        fprintf(log_file, "oss: Launched child P%d (PID %d) at %d:%d\n", i, pid, sim_clock[0], sim_clock[1]);
+        fflush(log_file);
+        printf("[DEBUG] Launched P%d (PID %d)\n", i, pid); // Console debug
+    }
+}
+
+void check_children() {
+    int status;
+    pid_t pid;
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        for (int i = 0; i < MAX_PROCESSES; i++) {
+            if (child_pids[i] == pid) {
+                fprintf(log_file, "oss: P%d (PID %d) terminated\n", i, pid);
+                for (int j = 0; j < PAGES_PER_PROCESS; j++) {
+                    int f = pcbs[i].pageTable[j];
+                    if (f != -1) {
+                        frameTable[f].occupied = 0;
+                        pcbs[i].pageTable[j] = -1;
+                    }
+                }
+                child_pids[i] = 0;
+                launched--;
+                break;
             }
         }
     }
+}
 
-    // Simulate process termination
-    for (int i = 0; i < num_processes; i++) {
-        log_process_termination(i, rand() % 1000000); // Random memory access time for demonstration
+int main(int argc, char *argv[]) {
+    int opt;
+    while ((opt = getopt(argc, argv, "hn:s:i:f:")) != -1) {
+        switch (opt) {
+            case 'h': print_usage(argv[0]); return 0;
+            case 'n': max_children = atoi(optarg); break;
+            case 's': simul_limit = atoi(optarg); break;
+            case 'i': launch_interval_ms = atoi(optarg); break;
+            case 'f': strncpy(log_filename, optarg, 255); break;
+        }
     }
 
-    cleanup();
+    srand(time(NULL));
+    signal(SIGINT, handle_sigint);
+    log_file = fopen(log_filename, "w");
+    if (!log_file) { perror("fopen"); exit(1); }
+
+    init_shared_resources();
+
+    int loop = 0;
+    int max_loops = 5000;
+
+    while ((total_created < max_children || launched > 0) && loop < max_loops) {
+        check_children();
+
+        if (total_created < max_children) {
+            for (int i = 0; i < MAX_PROCESSES && launched < simul_limit && total_created < max_children; i++) {
+                if (child_pids[i] == 0) {
+                    launch_child(i);
+                }
+            }
+        }
+
+        Message msg;
+        if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 0, IPC_NOWAIT) != -1) {
+            printf("[DEBUG] Received message from P%d: addr=%d %s\n", msg.pid, msg.address, msg.write ? "write" : "read");
+            handle_memory_request(msg);
+        }
+
+        if (loop % 100 == 0)
+            print_memory_map();
+
+        advance_clock(0, 1000);
+        usleep(launch_interval_ms * 1000);
+        loop++;
+    }
+
+    handle_sigint(SIGINT);
     return 0;
 }

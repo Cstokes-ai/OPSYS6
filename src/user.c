@@ -2,47 +2,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 #include <sys/ipc.h>
+#include <sys/shm.h>
 #include <sys/msg.h>
+#include <time.h>
 
-#define MSG_KEY        0x2222
-#define PAGE_SIZE      1024
-#define REQUEST_TYPE   1
+#define PAGE_COUNT 32
+#define PAGE_SIZE 1024
+#define MAX_ADDR (PAGE_COUNT * PAGE_SIZE)
 
 typedef struct {
-    long mtype;    // 1=request, pid+1=reply
+    long mtype;
     int pid;
     int address;
-    int is_write;
+    int write; // 1 = write, 0 = read
 } Message;
 
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        fprintf(stderr,"Usage: %s <sim_pid>\n",argv[0]);
-        return 1;
+int main(int argc, char *argv[]) {
+    if (argc < 5) {
+        fprintf(stderr, "Usage: %s <msqid> <shmid_clock> <shmid_pcbs> <index>\n", argv[0]);
+        exit(1);
     }
-    int sim_pid = atoi(argv[1]);
-    key_t key = MSG_KEY;
-    int msqid = msgget(key,0666);
-    if (msqid<0) { perror("msgget"); exit(1); }
-    srand(getpid());
 
-    // loop until kernel signals termination or we decide to stop
-    for (int i=0; i<1000; i++) {
-      Message msg = {
-        .mtype   = REQUEST_TYPE,
-        .pid     = sim_pid,
-        .address = (rand()%PAGE_SIZE)*PAGE_SIZE + rand()%PAGE_SIZE,
-        .is_write= (rand()%10)<3
-      };
-      msgsnd(msqid,&msg,sizeof(msg)-sizeof(long),0);
-      // block waiting for reply
-      Message rep;
-      msgrcv(msqid,&rep,sizeof(rep)-sizeof(long),sim_pid+1,0);
-      // simulate work
-      usleep((rand()%100+1)*1000);
+    int msqid = atoi(argv[1]);
+    int *clock = (int *)shmat(atoi(argv[2]), NULL, 0);
+    int index = atoi(argv[4]);
+
+    srand(time(NULL) ^ getpid());
+    int requests = 0;
+
+    while (requests++ < 5) { // Limit to 5 requests for faster testing
+        Message msg;
+        msg.mtype = 1;
+        msg.pid = index;
+        msg.address = rand() % MAX_ADDR; // Generate random address
+        msg.write = (rand() % 100 < 20); // 20% write, 80% read
+
+        printf("[DEBUG] P%d sending %s request for address %d\n",
+               index, msg.write ? "write" : "read", msg.address);
+
+        msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
+        msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 0, 0); // Wait for OSS reply
+
+        usleep(1000 + rand() % 5000); // Simulate delay
     }
-    // done
+
+    shmdt(clock);
     return 0;
 }
