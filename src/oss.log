@@ -1,290 +1,785 @@
-oss: Launched child P0 (PID 1407) at 0:0
-oss: Launched child P1 (PID 1408) at 0:0
-oss: Launched child P2 (PID 1409) at 0:0
-oss: Launched child P3 (PID 1410) at 0:0
-oss: Launched child P4 (PID 1411) at 0:0
-oss: P0 (PID 1407) terminated
-oss: P1 (PID 1408) terminated
-oss: P2 (PID 1409) terminated
-oss: P3 (PID 1410) terminated
-oss: P4 (PID 1411) terminated
-oss: P2 requesting write of address 22003 at time 0:1000
-oss: Address 22003 is not in a frame, pagefault
-oss: Indicating to P2 that write has happened to address 22003
+oss: Simulation initiated
 
-Current memory layout at time 0:14001000 is:
-Occupied DirtyBit LastRefS LastRefNano
-Frame 0: Yes 1 0 1000
-Frame 1: No  0 0
-Frame 2: No  0 0
-Frame 3: No  0 0
-Frame 4: No  0 0
-Frame 5: No  0 0
-Frame 6: No  0 0
-Frame 7: No  0 0
-Frame 8: No  0 0
-Frame 9: No  0 0
-Frame 10: No  0 0
-Frame 11: No  0 0
-Frame 12: No  0 0
-Frame 13: No  0 0
-Frame 14: No  0 0
-Frame 15: No  0 0
-Frame 16: No  0 0
-Frame 17: No  0 0
-Frame 18: No  0 0
-Frame 19: No  0 0
-Frame 20: No  0 0
-Frame 21: No  0 0
-Frame 22: No  0 0
-Frame 23: No  0 0
-Frame 24: No  0 0
-Frame 25: No  0 0
-Frame 26: No  0 0
-Frame 27: No  0 0
-Frame 28: No  0 0
-Frame 29: No  0 0
-Frame 30: No  0 0
-Frame 31: No  0 0
-Frame 32: No  0 0
-Frame 33: No  0 0
-Frame 34: No  0 0
-Frame 35: No  0 0
-Frame 36: No  0 0
-Frame 37: No  0 0
-Frame 38: No  0 0
-Frame 39: No  0 0
-Frame 40: No  0 0
-Frame 41: No  0 0
-Frame 42: No  0 0
-Frame 43: No  0 0
-Frame 44: No  0 0
-Frame 45: No  0 0
-Frame 46: No  0 0
-Frame 47: No  0 0
-Frame 48: No  0 0
-Frame 49: No  0 0
-Frame 50: No  0 0
-Frame 51: No  0 0
-Frame 52: No  0 0
-Frame 53: No  0 0
-Frame 54: No  0 0
-Frame 55: No  0 0
-Frame 56: No  0 0
-Frame 57: No  0 0
-Frame 58: No  0 0
-Frame 59: No  0 0
-Frame 60: No  0 0
-Frame 61: No  0 0
-Frame 62: No  0 0
-Frame 63: No  0 0
-Frame 64: No  0 0
-Frame 65: No  0 0
-Frame 66: No  0 0
-Frame 67: No  0 0
-Frame 68: No  0 0
-Frame 69: No  0 0
-Frame 70: No  0 0
-Frame 71: No  0 0
-Frame 72: No  0 0
-Frame 73: No  0 0
-Frame 74: No  0 0
-Frame 75: No  0 0
-Frame 76: No  0 0
-Frame 77: No  0 0
-Frame 78: No  0 0
-Frame 79: No  0 0
-Frame 80: No  0 0
-Frame 81: No  0 0
-Frame 82: No  0 0
-Frame 83: No  0 0
-Frame 84: No  0 0
-Frame 85: No  0 0
-Frame 86: No  0 0
-Frame 87: No  0 0
-Frame 88: No  0 0
-Frame 89: No  0 0
-Frame 90: No  0 0
-Frame 91: No  0 0
-Frame 92: No  0 0
-Frame 93: No  0 0
-Frame 94: No  0 0
-Frame 95: No  0 0
-Frame 96: No  0 0
-Frame 97: No  0 0
-Frame 98: No  0 0
-Frame 99: No  0 0
-Frame 100: No  0 0
-Frame 101: No  0 0
-Frame 102: No  0 0
-Frame 103: No  0 0
-Frame 104: No  0 0
-Frame 105: No  0 0
-Frame 106: No  0 0
-Frame 107: No  0 0
-Frame 108: No  0 0
-Frame 109: No  0 0
-Frame 110: No  0 0
-Frame 111: No  0 0
-Frame 112: No  0 0
-Frame 113: No  0 0
-Frame 114: No  0 0
-Frame 115: No  0 0
-Frame 116: No  0 0
-Frame 117: No  0 0
-Frame 118: No  0 0
-Frame 119: No  0 0
-Frame 120: No  0 0
-Frame 121: No  0 0
-Frame 122: No  0 0
-Frame 123: No  0 0
-Frame 124: No  0 0
-Frame 125: No  0 0
-Frame 126: No  0 0
-Frame 127: No  0 0
-Frame 128: No  0 0
-Frame 129: No  0 0
-Frame 130: No  0 0
-Frame 131: No  0 0
-Frame 132: No  0 0
-Frame 133: No  0 0
-Frame 134: No  0 0
-Frame 135: No  0 0
-Frame 136: No  0 0
-Frame 137: No  0 0
-Frame 138: No  0 0
-Frame 139: No  0 0
-Frame 140: No  0 0
-Frame 141: No  0 0
-Frame 142: No  0 0
-Frame 143: No  0 0
-Frame 144: No  0 0
-Frame 145: No  0 0
-Frame 146: No  0 0
-Frame 147: No  0 0
-Frame 148: No  0 0
-Frame 149: No  0 0
-Frame 150: No  0 0
-Frame 151: No  0 0
-Frame 152: No  0 0
-Frame 153: No  0 0
-Frame 154: No  0 0
-Frame 155: No  0 0
-Frame 156: No  0 0
-Frame 157: No  0 0
-Frame 158: No  0 0
-Frame 159: No  0 0
-Frame 160: No  0 0
-Frame 161: No  0 0
-Frame 162: No  0 0
-Frame 163: No  0 0
-Frame 164: No  0 0
-Frame 165: No  0 0
-Frame 166: No  0 0
-Frame 167: No  0 0
-Frame 168: No  0 0
-Frame 169: No  0 0
-Frame 170: No  0 0
-Frame 171: No  0 0
-Frame 172: No  0 0
-Frame 173: No  0 0
-Frame 174: No  0 0
-Frame 175: No  0 0
-Frame 176: No  0 0
-Frame 177: No  0 0
-Frame 178: No  0 0
-Frame 179: No  0 0
-Frame 180: No  0 0
-Frame 181: No  0 0
-Frame 182: No  0 0
-Frame 183: No  0 0
-Frame 184: No  0 0
-Frame 185: No  0 0
-Frame 186: No  0 0
-Frame 187: No  0 0
-Frame 188: No  0 0
-Frame 189: No  0 0
-Frame 190: No  0 0
-Frame 191: No  0 0
-Frame 192: No  0 0
-Frame 193: No  0 0
-Frame 194: No  0 0
-Frame 195: No  0 0
-Frame 196: No  0 0
-Frame 197: No  0 0
-Frame 198: No  0 0
-Frame 199: No  0 0
-Frame 200: No  0 0
-Frame 201: No  0 0
-Frame 202: No  0 0
-Frame 203: No  0 0
-Frame 204: No  0 0
-Frame 205: No  0 0
-Frame 206: No  0 0
-Frame 207: No  0 0
-Frame 208: No  0 0
-Frame 209: No  0 0
-Frame 210: No  0 0
-Frame 211: No  0 0
-Frame 212: No  0 0
-Frame 213: No  0 0
-Frame 214: No  0 0
-Frame 215: No  0 0
-Frame 216: No  0 0
-Frame 217: No  0 0
-Frame 218: No  0 0
-Frame 219: No  0 0
-Frame 220: No  0 0
-Frame 221: No  0 0
-Frame 222: No  0 0
-Frame 223: No  0 0
-Frame 224: No  0 0
-Frame 225: No  0 0
-Frame 226: No  0 0
-Frame 227: No  0 0
-Frame 228: No  0 0
-Frame 229: No  0 0
-Frame 230: No  0 0
-Frame 231: No  0 0
-Frame 232: No  0 0
-Frame 233: No  0 0
-Frame 234: No  0 0
-Frame 235: No  0 0
-Frame 236: No  0 0
-Frame 237: No  0 0
-Frame 238: No  0 0
-Frame 239: No  0 0
-Frame 240: No  0 0
-Frame 241: No  0 0
-Frame 242: No  0 0
-Frame 243: No  0 0
-Frame 244: No  0 0
-Frame 245: No  0 0
-Frame 246: No  0 0
-Frame 247: No  0 0
-Frame 248: No  0 0
-Frame 249: No  0 0
-Frame 250: No  0 0
-Frame 251: No  0 0
-Frame 252: No  0 0
-Frame 253: No  0 0
-Frame 254: No  0 0
-Frame 255: No  0 0
-P0 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P1 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P2 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P3 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P4 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P5 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P6 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P7 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P8 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P9 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P10 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P11 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P12 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P13 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P14 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P15 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P16 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
-P17 page table: [ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 ]
+Memory snapshot at 100000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 200000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 300000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 400000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 500000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 600000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 700000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 800000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 900000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1000000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1100000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1200000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1300000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1400000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1500000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1600000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1700000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1800000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 1900000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2000000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2100000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2200000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2300000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2400000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2500000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2600000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2700000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2800000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 2900000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3000000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3100000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3200000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3300000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3400000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3500000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+
+Memory snapshot at 3600000 ns:
+Frame Table:
+Frame 0: Free
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+oss: User 3 requests to write page 14 at 3700000 ns
+oss: Loaded page 14 into frame 0 for User 3 (write)
+
+Memory snapshot at 3700000 ns:
+Frame Table:
+Frame 0: User 3, Page 14, Dirty: 1, LastUsed: 3700000
+Frame 1: Free
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+oss: User 13 requests to read page 0 at 3800000 ns
+oss: Loaded page 0 into frame 1 for User 13 (read)
+
+Memory snapshot at 3800000 ns:
+Frame Table:
+Frame 0: User 3, Page 14, Dirty: 1, LastUsed: 3700000
+Frame 1: User 13, Page 0, Dirty: 0, LastUsed: 3800000
+Frame 2: Free
+Frame 3: Free
+Frame 4: Free
+oss: User 11 requests to read page 18 at 3900000 ns
+oss: Loaded page 18 into frame 2 for User 11 (read)
+
+Memory snapshot at 3900000 ns:
+Frame Table:
+Frame 0: User 3, Page 14, Dirty: 1, LastUsed: 3700000
+Frame 1: User 13, Page 0, Dirty: 0, LastUsed: 3800000
+Frame 2: User 11, Page 18, Dirty: 0, LastUsed: 3900000
+Frame 3: Free
+Frame 4: Free
+oss: User 4 requests to write page 9 at 4000000 ns
+oss: Loaded page 9 into frame 3 for User 4 (write)
+
+Memory snapshot at 4000000 ns:
+Frame Table:
+Frame 0: User 3, Page 14, Dirty: 1, LastUsed: 3700000
+Frame 1: User 13, Page 0, Dirty: 0, LastUsed: 3800000
+Frame 2: User 11, Page 18, Dirty: 0, LastUsed: 3900000
+Frame 3: User 4, Page 9, Dirty: 1, LastUsed: 4000000
+Frame 4: Free
+oss: User 15 requests to read page 26 at 4100000 ns
+oss: Loaded page 26 into frame 4 for User 15 (read)
+
+Memory snapshot at 4100000 ns:
+Frame Table:
+Frame 0: User 3, Page 14, Dirty: 1, LastUsed: 3700000
+Frame 1: User 13, Page 0, Dirty: 0, LastUsed: 3800000
+Frame 2: User 11, Page 18, Dirty: 0, LastUsed: 3900000
+Frame 3: User 4, Page 9, Dirty: 1, LastUsed: 4000000
+Frame 4: User 15, Page 26, Dirty: 0, LastUsed: 4100000
+oss: User 17 requests to read page 19 at 4200000 ns
+oss: Flushing dirty frame 0 to disk
+oss: Loaded page 19 into frame 0 for User 17 (read)
+
+Memory snapshot at 4200000 ns:
+Frame Table:
+Frame 0: User 17, Page 19, Dirty: 0, LastUsed: 4200000
+Frame 1: User 13, Page 0, Dirty: 0, LastUsed: 3800000
+Frame 2: User 11, Page 18, Dirty: 0, LastUsed: 3900000
+Frame 3: User 4, Page 9, Dirty: 1, LastUsed: 4000000
+Frame 4: User 15, Page 26, Dirty: 0, LastUsed: 4100000
+oss: User 9 requests to read page 2 at 4300000 ns
+oss: Loaded page 2 into frame 1 for User 9 (read)
+
+Memory snapshot at 4300000 ns:
+Frame Table:
+Frame 0: User 17, Page 19, Dirty: 0, LastUsed: 4200000
+Frame 1: User 9, Page 2, Dirty: 0, LastUsed: 4300000
+Frame 2: User 11, Page 18, Dirty: 0, LastUsed: 3900000
+Frame 3: User 4, Page 9, Dirty: 1, LastUsed: 4000000
+Frame 4: User 15, Page 26, Dirty: 0, LastUsed: 4100000
+oss: User 5 requests to read page 2 at 4400000 ns
+oss: Loaded page 2 into frame 2 for User 5 (read)
+
+Memory snapshot at 4400000 ns:
+Frame Table:
+Frame 0: User 17, Page 19, Dirty: 0, LastUsed: 4200000
+Frame 1: User 9, Page 2, Dirty: 0, LastUsed: 4300000
+Frame 2: User 5, Page 2, Dirty: 0, LastUsed: 4400000
+Frame 3: User 4, Page 9, Dirty: 1, LastUsed: 4000000
+Frame 4: User 15, Page 26, Dirty: 0, LastUsed: 4100000
+oss: User 16 requests to write page 25 at 4500000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 25 into frame 3 for User 16 (write)
+
+Memory snapshot at 4500000 ns:
+Frame Table:
+Frame 0: User 17, Page 19, Dirty: 0, LastUsed: 4200000
+Frame 1: User 9, Page 2, Dirty: 0, LastUsed: 4300000
+Frame 2: User 5, Page 2, Dirty: 0, LastUsed: 4400000
+Frame 3: User 16, Page 25, Dirty: 1, LastUsed: 4500000
+Frame 4: User 15, Page 26, Dirty: 0, LastUsed: 4100000
+oss: User 8 requests to write page 16 at 4600000 ns
+oss: Loaded page 16 into frame 4 for User 8 (write)
+
+Memory snapshot at 4600000 ns:
+Frame Table:
+Frame 0: User 17, Page 19, Dirty: 0, LastUsed: 4200000
+Frame 1: User 9, Page 2, Dirty: 0, LastUsed: 4300000
+Frame 2: User 5, Page 2, Dirty: 0, LastUsed: 4400000
+Frame 3: User 16, Page 25, Dirty: 1, LastUsed: 4500000
+Frame 4: User 8, Page 16, Dirty: 1, LastUsed: 4600000
+oss: User 12 requests to read page 5 at 4700000 ns
+oss: Loaded page 5 into frame 0 for User 12 (read)
+
+Memory snapshot at 4700000 ns:
+Frame Table:
+Frame 0: User 12, Page 5, Dirty: 0, LastUsed: 4700000
+Frame 1: User 9, Page 2, Dirty: 0, LastUsed: 4300000
+Frame 2: User 5, Page 2, Dirty: 0, LastUsed: 4400000
+Frame 3: User 16, Page 25, Dirty: 1, LastUsed: 4500000
+Frame 4: User 8, Page 16, Dirty: 1, LastUsed: 4600000
+oss: User 10 requests to read page 11 at 4800000 ns
+oss: Loaded page 11 into frame 1 for User 10 (read)
+
+Memory snapshot at 4800000 ns:
+Frame Table:
+Frame 0: User 12, Page 5, Dirty: 0, LastUsed: 4700000
+Frame 1: User 10, Page 11, Dirty: 0, LastUsed: 4800000
+Frame 2: User 5, Page 2, Dirty: 0, LastUsed: 4400000
+Frame 3: User 16, Page 25, Dirty: 1, LastUsed: 4500000
+Frame 4: User 8, Page 16, Dirty: 1, LastUsed: 4600000
+oss: User 15 requests to read page 20 at 4900000 ns
+oss: Loaded page 20 into frame 2 for User 15 (read)
+
+Memory snapshot at 4900000 ns:
+Frame Table:
+Frame 0: User 12, Page 5, Dirty: 0, LastUsed: 4700000
+Frame 1: User 10, Page 11, Dirty: 0, LastUsed: 4800000
+Frame 2: User 15, Page 20, Dirty: 0, LastUsed: 4900000
+Frame 3: User 16, Page 25, Dirty: 1, LastUsed: 4500000
+Frame 4: User 8, Page 16, Dirty: 1, LastUsed: 4600000
+oss: User 2 requests to read page 9 at 5000000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 9 into frame 3 for User 2 (read)
+
+Memory snapshot at 5000000 ns:
+Frame Table:
+Frame 0: User 12, Page 5, Dirty: 0, LastUsed: 4700000
+Frame 1: User 10, Page 11, Dirty: 0, LastUsed: 4800000
+Frame 2: User 15, Page 20, Dirty: 0, LastUsed: 4900000
+Frame 3: User 2, Page 9, Dirty: 0, LastUsed: 5000000
+Frame 4: User 8, Page 16, Dirty: 1, LastUsed: 4600000
+oss: User 6 requests to read page 15 at 5100000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 15 into frame 4 for User 6 (read)
+
+Memory snapshot at 5100000 ns:
+Frame Table:
+Frame 0: User 12, Page 5, Dirty: 0, LastUsed: 4700000
+Frame 1: User 10, Page 11, Dirty: 0, LastUsed: 4800000
+Frame 2: User 15, Page 20, Dirty: 0, LastUsed: 4900000
+Frame 3: User 2, Page 9, Dirty: 0, LastUsed: 5000000
+Frame 4: User 6, Page 15, Dirty: 0, LastUsed: 5100000
+oss: User 0 requests to write page 7 at 5200000 ns
+oss: Loaded page 7 into frame 0 for User 0 (write)
+
+Memory snapshot at 5200000 ns:
+Frame Table:
+Frame 0: User 0, Page 7, Dirty: 1, LastUsed: 5200000
+Frame 1: User 10, Page 11, Dirty: 0, LastUsed: 4800000
+Frame 2: User 15, Page 20, Dirty: 0, LastUsed: 4900000
+Frame 3: User 2, Page 9, Dirty: 0, LastUsed: 5000000
+Frame 4: User 6, Page 15, Dirty: 0, LastUsed: 5100000
+oss: User 14 requests to read page 20 at 5300000 ns
+oss: Loaded page 20 into frame 1 for User 14 (read)
+
+Memory snapshot at 5300000 ns:
+Frame Table:
+Frame 0: User 0, Page 7, Dirty: 1, LastUsed: 5200000
+Frame 1: User 14, Page 20, Dirty: 0, LastUsed: 5300000
+Frame 2: User 15, Page 20, Dirty: 0, LastUsed: 4900000
+Frame 3: User 2, Page 9, Dirty: 0, LastUsed: 5000000
+Frame 4: User 6, Page 15, Dirty: 0, LastUsed: 5100000
+oss: User 1 requests to read page 8 at 5400000 ns
+oss: Loaded page 8 into frame 2 for User 1 (read)
+
+Memory snapshot at 5400000 ns:
+Frame Table:
+Frame 0: User 0, Page 7, Dirty: 1, LastUsed: 5200000
+Frame 1: User 14, Page 20, Dirty: 0, LastUsed: 5300000
+Frame 2: User 1, Page 8, Dirty: 0, LastUsed: 5400000
+Frame 3: User 2, Page 9, Dirty: 0, LastUsed: 5000000
+Frame 4: User 6, Page 15, Dirty: 0, LastUsed: 5100000
+oss: User 7 requests to write page 29 at 5500000 ns
+oss: Loaded page 29 into frame 3 for User 7 (write)
+
+Memory snapshot at 5500000 ns:
+Frame Table:
+Frame 0: User 0, Page 7, Dirty: 1, LastUsed: 5200000
+Frame 1: User 14, Page 20, Dirty: 0, LastUsed: 5300000
+Frame 2: User 1, Page 8, Dirty: 0, LastUsed: 5400000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 15, Dirty: 0, LastUsed: 5100000
+oss: User 6 requests to write page 13 at 5600000 ns
+oss: Loaded page 13 into frame 4 for User 6 (write)
+
+Memory snapshot at 5600000 ns:
+Frame Table:
+Frame 0: User 0, Page 7, Dirty: 1, LastUsed: 5200000
+Frame 1: User 14, Page 20, Dirty: 0, LastUsed: 5300000
+Frame 2: User 1, Page 8, Dirty: 0, LastUsed: 5400000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+oss: User 0 requests to read page 13 at 5700000 ns
+oss: Flushing dirty frame 0 to disk
+oss: Loaded page 13 into frame 0 for User 0 (read)
+
+Memory snapshot at 5700000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 14, Page 20, Dirty: 0, LastUsed: 5300000
+Frame 2: User 1, Page 8, Dirty: 0, LastUsed: 5400000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+oss: User 16 requests to read page 25 at 5800000 ns
+oss: Loaded page 25 into frame 1 for User 16 (read)
+
+Memory snapshot at 5800000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 1, Page 8, Dirty: 0, LastUsed: 5400000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+oss: User 11 requests to write page 26 at 5900000 ns
+oss: Loaded page 26 into frame 2 for User 11 (write)
+
+Memory snapshot at 5900000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+
+Memory snapshot at 6000000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+
+Memory snapshot at 6100000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+
+Memory snapshot at 6200000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 7, Page 29, Dirty: 1, LastUsed: 5500000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+oss: User 4 requests to write page 19 at 6300000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 19 into frame 3 for User 4 (write)
+
+Memory snapshot at 6300000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 6, Page 13, Dirty: 1, LastUsed: 5600000
+oss: User 4 requests to read page 23 at 6400000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 23 into frame 4 for User 4 (read)
+
+Memory snapshot at 6400000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+
+Memory snapshot at 6500000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+
+Memory snapshot at 6600000 ns:
+Frame Table:
+Frame 0: User 0, Page 13, Dirty: 0, LastUsed: 5700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+oss: User 10 requests to read page 25 at 6700000 ns
+oss: Loaded page 25 into frame 0 for User 10 (read)
+
+Memory snapshot at 6700000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+Frame 1: User 16, Page 25, Dirty: 0, LastUsed: 5800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+oss: User 0 requests to write page 1 at 6800000 ns
+oss: Loaded page 1 into frame 1 for User 0 (write)
+
+Memory snapshot at 6800000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+Frame 1: User 0, Page 1, Dirty: 1, LastUsed: 6800000
+Frame 2: User 11, Page 26, Dirty: 1, LastUsed: 5900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+oss: User 2 requests to read page 22 at 6900000 ns
+oss: Flushing dirty frame 2 to disk
+oss: Loaded page 22 into frame 2 for User 2 (read)
+
+Memory snapshot at 6900000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+Frame 1: User 0, Page 1, Dirty: 1, LastUsed: 6800000
+Frame 2: User 2, Page 22, Dirty: 0, LastUsed: 6900000
+Frame 3: User 4, Page 19, Dirty: 1, LastUsed: 6300000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+oss: User 8 requests to write page 28 at 7000000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 28 into frame 3 for User 8 (write)
+
+Memory snapshot at 7000000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+Frame 1: User 0, Page 1, Dirty: 1, LastUsed: 6800000
+Frame 2: User 2, Page 22, Dirty: 0, LastUsed: 6900000
+Frame 3: User 8, Page 28, Dirty: 1, LastUsed: 7000000
+Frame 4: User 4, Page 23, Dirty: 0, LastUsed: 6400000
+oss: User 1 requests to write page 21 at 7100000 ns
+oss: Loaded page 21 into frame 4 for User 1 (write)
+
+Memory snapshot at 7100000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+Frame 1: User 0, Page 1, Dirty: 1, LastUsed: 6800000
+Frame 2: User 2, Page 22, Dirty: 0, LastUsed: 6900000
+Frame 3: User 8, Page 28, Dirty: 1, LastUsed: 7000000
+Frame 4: User 1, Page 21, Dirty: 1, LastUsed: 7100000
+
+Memory snapshot at 7200000 ns:
+Frame Table:
+Frame 0: User 10, Page 25, Dirty: 0, LastUsed: 6700000
+oss: User 12 requests to read page 17 at 7600000 ns
+oss: Loaded page 17 into frame 0 for User 12 (read)
+oss: User 14 requests to write page 15 at 7700000 ns
+oss: Flushing dirty frame 1 to disk
+oss: Loaded page 15 into frame 1 for User 14 (write)
+oss: User 10 requests to read page 14 at 7800000 ns
+oss: Loaded page 14 into frame 2 for User 10 (read)
+oss: User 9 requests to write page 15 at 8000000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 15 into frame 3 for User 9 (write)
+oss: User 3 requests to write page 10 at 8200000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 10 into frame 4 for User 3 (write)
+oss: User 11 requests to read page 22 at 8300000 ns
+oss: Loaded page 22 into frame 0 for User 11 (read)
+oss: User 5 has exited
+oss: User 17 has exited
+oss: User 7 requests to read page 10 at 8900000 ns
+oss: Flushing dirty frame 1 to disk
+oss: Loaded page 10 into frame 1 for User 7 (read)
+oss: User 13 requests to read page 1 at 9000000 ns
+oss: Loaded page 1 into frame 2 for User 13 (read)
+oss: User 6 requests to read page 25 at 9400000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 25 into frame 3 for User 6 (read)
+oss: User 1 has exited
+oss: User 14 requests to write page 16 at 9900000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 16 into frame 4 for User 14 (write)
+oss: User 15 requests to read page 5 at 10000000 ns
+oss: Loaded page 5 into frame 0 for User 15 (read)
+oss: User 3 requests to write page 14 at 10100000 ns
+oss: Loaded page 14 into frame 1 for User 3 (write)
+oss: User 8 requests to read page 1 at 10700000 ns
+oss: Loaded page 1 into frame 2 for User 8 (read)
+oss: User 3 requests to read page 18 at 11500000 ns
+oss: Loaded page 18 into frame 3 for User 3 (read)
+oss: User 14 requests to read page 4 at 11800000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 4 into frame 4 for User 14 (read)
+oss: User 16 requests to read page 27 at 11900000 ns
+oss: Loaded page 27 into frame 0 for User 16 (read)
+oss: User 9 requests to read page 9 at 12000000 ns
+oss: Flushing dirty frame 1 to disk
+oss: Loaded page 9 into frame 1 for User 9 (read)
+oss: User 8 requests to read page 23 at 12500000 ns
+oss: Loaded page 23 into frame 2 for User 8 (read)
+oss: User 14 requests to read page 14 at 12600000 ns
+oss: Loaded page 14 into frame 3 for User 14 (read)
+oss: User 6 requests to write page 20 at 12700000 ns
+oss: Loaded page 20 into frame 4 for User 6 (write)
+oss: User 10 requests to write page 17 at 12800000 ns
+oss: Loaded page 17 into frame 0 for User 10 (write)
+oss: User 4 requests to read page 23 at 12900000 ns
+oss: Loaded page 23 into frame 1 for User 4 (read)
+oss: User 7 requests to write page 31 at 13000000 ns
+oss: Loaded page 31 into frame 2 for User 7 (write)
+oss: User 11 requests to write page 7 at 13100000 ns
+oss: Loaded page 7 into frame 3 for User 11 (write)
+oss: User 0 requests to read page 1 at 13300000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 1 into frame 4 for User 0 (read)
+oss: User 9 requests to read page 6 at 13500000 ns
+oss: Flushing dirty frame 0 to disk
+oss: Loaded page 6 into frame 0 for User 9 (read)
+oss: User 7 requests to write page 9 at 14000000 ns
+oss: Loaded page 9 into frame 1 for User 7 (write)
+oss: User 13 requests to write page 23 at 14400000 ns
+oss: Flushing dirty frame 2 to disk
+oss: Loaded page 23 into frame 2 for User 13 (write)
+oss: User 2 requests to write page 10 at 14500000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 10 into frame 3 for User 2 (write)
+oss: User 12 requests to write page 12 at 14800000 ns
+oss: Loaded page 12 into frame 4 for User 12 (write)
+oss: User 15 requests to write page 31 at 15500000 ns
+oss: Loaded page 31 into frame 0 for User 15 (write)
+oss: User 0 requests to read page 28 at 15700000 ns
+oss: Flushing dirty frame 1 to disk
+oss: Loaded page 28 into frame 1 for User 0 (read)
+oss: User 9 requests to write page 24 at 17600000 ns
+oss: Flushing dirty frame 2 to disk
+oss: Loaded page 24 into frame 2 for User 9 (write)
+oss: User 10 requests to write page 23 at 18300000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 23 into frame 3 for User 10 (write)
+oss: User 3 has exited
+oss: User 7 requests to read page 14 at 18500000 ns
+oss: Flushing dirty frame 4 to disk
+oss: Loaded page 14 into frame 4 for User 7 (read)
+oss: User 11 requests to write page 15 at 18600000 ns
+oss: Flushing dirty frame 0 to disk
+oss: Loaded page 15 into frame 0 for User 11 (write)
+oss: User 2 requests to write page 26 at 18700000 ns
+oss: Loaded page 26 into frame 1 for User 2 (write)
+oss: User 13 has exited
+oss: User 16 requests to read page 31 at 19100000 ns
+oss: Flushing dirty frame 2 to disk
+oss: Loaded page 31 into frame 2 for User 16 (read)
+oss: User 8 requests to read page 0 at 19300000 ns
+oss: Flushing dirty frame 3 to disk
+oss: Loaded page 0 into frame 3 for User 8 (read)
+oss: User 4 requests to write page 12 at 20000000 ns
+oss: Loaded page 12 into frame 4 for User 4 (write)
+User 0: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 1: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 2: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 
+User 3: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 4: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  4 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 5: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 6: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 7: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 8:  3 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 9: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 10: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 11: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 12: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 13: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 14: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 15: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+User 16: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  2 
+User 17: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+
+==== Final User Page Tables ====
+Page Table 0: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 1: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 2: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 
+Page Table 3: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 4: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  4 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 5: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 6: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 7: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 8:  3 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 9: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 10: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 11: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 12: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 13: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 14: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 15: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+Page Table 16: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  2 
+Page Table 17: -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+oss: Releasing all resources...
