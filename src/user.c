@@ -41,8 +41,10 @@ int main(int argc, char *argv[]) {
         printf("[DEBUG] P%d sending %s request for address %d\n",
                index, msg.write ? "write" : "read", msg.address);
 
+        msg.mtype = msg.pid + 1;
         msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
-        msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 0, 0); // Wait for OSS reply
+
+; // Wait for OSS reply
 
         usleep(1000 + rand() % 5000); // Simulate delay
     }

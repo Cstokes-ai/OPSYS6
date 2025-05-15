@@ -82,6 +82,15 @@ void init_shared_resources() {
         for (int j = 0; j < PAGES_PER_PROCESS; j++)
             pcbs[i].pageTable[j] = -1;
 
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        frameTable[i].occupied = 0;
+        frameTable[i].pid = -1;
+        frameTable[i].page = -1;
+        frameTable[i].dirty = 0;
+        frameTable[i].lastRefSec = 0;
+        frameTable[i].lastRefNano = 0;
+    }
+
     msqid = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
 }
 
@@ -117,12 +126,11 @@ void print_memory_map() {
     }
 
     for (int i = 0; i < MAX_PROCESSES; i++) {
-        if (child_pids[i] > 0) {
-            fprintf(log_file, "P%d page table: [ ", i);
-            for (int j = 0; j < PAGES_PER_PROCESS; j++)
-                fprintf(log_file, "%d ", pcbs[i].pageTable[j]);
-            fprintf(log_file, "]\n");
+        fprintf(log_file, "P%d page table: [ ", i);
+        for (int j = 0; j < PAGES_PER_PROCESS; j++) {
+            fprintf(log_file, "%d ", pcbs[i].pageTable[j]);
         }
+        fprintf(log_file, "]\n");
     }
     fflush(log_file);
 }
@@ -146,6 +154,7 @@ void handle_memory_request(Message msg) {
                 addr, frame, msg.write ? "writing" : "giving", pid, sim_clock[0], sim_clock[1]);
 
         advance_clock(0, 100);
+        msg.mtype = pid + 1;
         msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
     } else {
         fprintf(log_file, "oss: Address %05d is not in a frame, pagefault\n", addr);
@@ -162,15 +171,19 @@ void handle_memory_request(Message msg) {
             pcbs[victim->pid].pageTable[victim->page] = -1;
         }
 
-        frameTable[f] = (FrameTableEntry){
-            .occupied = 1, .pid = pid, .page = page, .dirty = msg.write,
-            .lastRefSec = sim_clock[0], .lastRefNano = sim_clock[1]
-        };
+        frameTable[f].occupied = 1;
+        frameTable[f].pid = pid;
+        frameTable[f].page = page;
+        frameTable[f].dirty = msg.write ? 1 : 0;
+        frameTable[f].lastRefSec = sim_clock[0];
+        frameTable[f].lastRefNano = sim_clock[1];
         pcbs[pid].pageTable[page] = f;
 
         advance_clock(0, DISK_IO_TIME_NS);
         fprintf(log_file, "oss: Indicating to P%d that %s has happened to address %05d\n",
                 pid, msg.write ? "write" : "read", addr);
+
+        msg.mtype = pid + 1;
         msgsnd(msqid, &msg, sizeof(Message) - sizeof(long), 0);
     }
     fflush(log_file);
@@ -193,7 +206,7 @@ void launch_child(int i) {
         total_created++;
         fprintf(log_file, "oss: Launched child P%d (PID %d) at %d:%d\n", i, pid, sim_clock[0], sim_clock[1]);
         fflush(log_file);
-        printf("[DEBUG] Launched P%d (PID %d)\n", i, pid); // Console debug
+        printf("[DEBUG] Launched P%d (PID %d)\n", i, pid);
     }
 }
 
@@ -240,6 +253,7 @@ int main(int argc, char *argv[]) {
 
     int loop = 0;
     int max_loops = 5000;
+    int first_dump_done = 0;
 
     while ((total_created < max_children || launched > 0) && loop < max_loops) {
         check_children();
@@ -256,9 +270,14 @@ int main(int argc, char *argv[]) {
         if (msgrcv(msqid, &msg, sizeof(Message) - sizeof(long), 0, IPC_NOWAIT) != -1) {
             printf("[DEBUG] Received message from P%d: addr=%d %s\n", msg.pid, msg.address, msg.write ? "write" : "read");
             handle_memory_request(msg);
+
+            if (!first_dump_done) {
+                print_memory_map();
+                first_dump_done = 1;
+            }
         }
 
-        if (loop % 100 == 0)
+        if (loop % 100 == 0 && first_dump_done)
             print_memory_map();
 
         advance_clock(0, 1000);
